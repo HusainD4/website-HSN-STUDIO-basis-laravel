@@ -10,6 +10,14 @@
             <a href="{{ route('dashboard') }}" class="me-5 flex items-center space-x-2 rtl:space-x-reverse" wire:navigate>
                 <x-app-logo />
             </a>
+        <!-- Dashboard -->
+        <flux:navlist.item 
+            icon="home-modern" 
+            href="{{ route('admin.dashboard') }}" 
+            :current="request()->routeIs('admin.dashboard')" 
+            wire:navigate>
+            {{ __('Dashboard') }}
+        </flux:navlist.item>
 
             <flux:navlist variant="outline">
                 <flux:navlist.group heading="Admin Panel" class="grid">
@@ -38,7 +46,7 @@
                     :current="request()->routeIs('admin.services.*')" 
                     wire:navigate>
                     {{ __('Jasa') }}
-                </flux:navlist.item>
+                </flux:navlist.item>           
 
                 <!-- Kritik & Saran -->
                 <flux:navlist.item 

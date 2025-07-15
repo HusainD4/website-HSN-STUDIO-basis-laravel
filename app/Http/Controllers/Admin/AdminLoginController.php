@@ -10,27 +10,39 @@ class AdminLoginController extends Controller
 {
     public function showLoginForm()
     {
-        return view('admin.login'); // view untuk admin login
+        return view('admin.login');
     }
 
-    public function login(Request $request)
-    {
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
-        ]);
+    
+public function login(Request $request)
+{
+    $credentials = $request->validate([
+        'email' => ['required', 'email'],
+        'password' => ['required'],
+    ]);
 
-        // Login dengan guard admin (pastikan sudah konfigurasi guard admin di config/auth.php)
-        if (Auth::guard('admin')->attempt($credentials)) {
-            $request->session()->regenerate();
-
-            return redirect()->intended('/admin/dashboard');
+    // Coba login menggunakan guard 'admin'
+    if (Auth::guard('admin')->attempt($credentials)) {
+        
+        // --> TAMBAHKAN PENGECEKAN INI
+        $user = Auth::guard('admin')->user();
+        if ($user->role !== 'admin') {
+            // Jika role pengguna bukan admin, langsung logout
+            Auth::guard('admin')->logout();
+            return back()->withErrors([
+                'email' => 'Anda tidak memiliki hak akses sebagai admin.',
+            ])->onlyInput('email');
         }
+        // <-- AKHIR DARI PENGECEKAN
 
-        return back()->withErrors([
-            'email' => 'Email atau password salah untuk admin.',
-        ])->onlyInput('email');
+        $request->session()->regenerate();
+        return redirect()->intended('/admin/dashboard');
     }
+
+    return back()->withErrors([
+        'email' => 'Email atau password salah untuk admin.',
+    ])->onlyInput('email');
+}
 
     public function logout(Request $request)
     {
@@ -39,6 +51,7 @@ class AdminLoginController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/login');
+        // Mengarahkan ke halaman login admin, bukan pengguna
+        return redirect()->route('admin.login');
     }
 }

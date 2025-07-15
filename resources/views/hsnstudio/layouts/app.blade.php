@@ -261,7 +261,6 @@
             .gallery-grid { column-count: 1; }
         }
 
-        /* --- STYLE BARU UNTUK MEDIA SOSIAL DIMASUKKAN DI SINI --- */
         .social-grid {
             display: flex;
             flex-wrap: wrap;
@@ -298,28 +297,188 @@
             font-weight: 700;
             margin-bottom: 0;
         }
-        /* --- AKHIR STYLE MEDIA SOSIAL --- */
 
-        footer {
-            margin-top: 5rem;
-            background-color: var(--bright-blue);
+        /*=====================================
+          STYLE FOOTER PROFESIONAL
+        =======================================*/
+        .footer-custom {
+            background: linear-gradient(90deg, #0f2027, #203a43, #2c5364); /* Sama seperti navbar untuk konsistensi */
+            color: rgba(255, 255, 255, 0.8);
+            padding: 80px 0 20px 0;
+        }
+
+        .footer-custom .footer-brand {
+            font-weight: 700;
             color: var(--white);
+            font-size: 1.8rem;
+            background: linear-gradient(to right, #3498db 20%, #e91e63 40%, #f1c40f 60%, #3498db 80%);
+            background-size: 200% auto;
+            color: transparent;
+            background-clip: text;
+            -webkit-background-clip: text;
+            animation: shine-text 5s linear infinite;
+        }
+
+        .footer-custom .footer-tagline {
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        .footer-custom .footer-heading {
+            color: var(--white);
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            position: relative;
+            padding-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .footer-custom .footer-heading::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 40px;
+            height: 3px;
+            background: linear-gradient(45deg, var(--bright-blue), var(--bright-pink));
+            border-radius: 2px;
+        }
+
+        .footer-custom .footer-links a {
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+
+        .footer-custom .footer-links a:hover {
+            color: var(--white);
+            transform: translateX(5px);
+        }
+
+        .footer-custom .footer-contact li {
+            margin-bottom: 10px;
+        }
+
+        .footer-custom .input-group .form-control {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: var(--white);
+            border-radius: 50px 0 0 50px;
+        }
+        .footer-custom .input-group .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        .footer-custom .input-group .form-control:focus {
+            background-color: rgba(255, 255, 255, 0.2);
+            box-shadow: none;
+            border-color: var(--bright-blue);
+            color: var(--white);
+        }
+
+        .footer-custom .btn-subscribe {
+            background: linear-gradient(45deg, var(--bright-blue), var(--bright-pink));
+            border: none;
+            color: var(--white);
+            border-radius: 0 50px 50px 0;
+        }
+
+        .footer-custom .footer-social-links .social-icon {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--white);
+            text-decoration: none;
+            margin-right: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .footer-custom .footer-social-links .social-icon:hover {
+            background: var(--bright-pink);
+            transform: translateY(-5px);
+        }
+
+        .footer-custom .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 40px;
+            padding-top: 20px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.6);
         }
     </style>
 </head>
 <body>
     @include('hsnstudio.components.navbar')
-    <main>@yield('content')</main>
+
+    <main>
+        @yield('content')
+    </main>
 
     <div id="lightbox" class="lightbox">
         <span class="close">&times;</span>
         <img class="lightbox-content" id="lightbox-img">
     </div>
 
-    <footer class="text-white text-center py-4 mt-5">
-        <div class="container"><p class="mb-0">&copy; {{ date('Y') }} HSN Studio. All rights reserved.</p></div>
-    </footer>
+    <footer class="footer-custom">
+        <div class="container">
+            <div class="row gy-4">
 
+                <div class="col-lg-4 col-md-6">
+                    <h3 class="footer-brand">HSN Studio</h3>
+                    <p class="footer-tagline">Mewujudkan ide digital Anda menjadi karya yang luar biasa. Kreativitas dan teknologi dalam satu harmoni.</p>
+                    <div class="footer-social-links mt-3">
+                        <a href="#" class="social-icon" title="Instagram"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-icon" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="social-icon" title="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-icon" title="TikTok"><i class="fab fa-tiktok"></i></a>
+                    </div>
+                </div>
+
+                <div class="col-lg-2 col-md-6">
+                    <h4 class="footer-heading">Navigasi</h4>
+                    <ul class="footer-links list-unstyled">
+                        <li><a href="#">Beranda</a></li>
+                        <li><a href="#layanan">Layanan</a></li>
+                        <li><a href="#portofolio">Portofolio</a></li>
+                        <li><a href="#tentang">Tentang Kami</a></li>
+                        <li><a href="#kontak">Kontak</a></li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="footer-heading">Hubungi Kami</h4>
+                    <ul class="footer-contact list-unstyled">
+                        <li><i class="fas fa-map-marker-alt me-2"></i> Jl. Merdeka No. 123, Tegal</li>
+                        <li><i class="fas fa-phone me-2"></i> (0283) 123-456</li>
+                        <li><i class="fas fa-envelope me-2"></i> kontak@hsnstudio.com</li>
+                    </ul>
+                </div>
+
+                <div class="col-lg-3 col-md-6">
+                    <h4 class="footer-heading">Berlangganan</h4>
+                    <p>Dapatkan info dan penawaran terbaru dari kami langsung di email Anda.</p>
+                    <form>
+                        <div class="input-group">
+                            <input type="email" class="form-control" placeholder="Alamat email..." aria-label="Alamat email">
+                            <button class="btn btn-subscribe" type="button"><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+            <div class="footer-bottom text-center">
+                <p class="mb-0">&copy; {{ date('Y') }} HSN Studio. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
     <script>

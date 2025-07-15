@@ -22,13 +22,6 @@ use App\Http\Controllers\Auth\UserRegisterController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\Admin\SettingsController;
 
-// Admin Controllers
-use App\Http\Controllers\Admin\ProductController as AdminProductController;
-use App\Http\Controllers\Admin\CategoryController as AdminCategoryController;
-use App\Http\Controllers\Admin\ServicesController as AdminServiceController;
-use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
-use App\Http\Controllers\Admin\TransactionController;
-
 // =====================================================
 // PUBLIC ROUTES
 // =====================================================
@@ -75,71 +68,77 @@ Route::prefix('cart')->group(function () {
     Route::post('/checkout', [CartController::class, 'checkout'])->middleware('auth:web')->name('cart.checkout');
 });
 
-
 // =====================================================
-// USER AUTH & DASHBOARD (GUARD: web)
+// USER AUTH & DASHBOARD
 // =====================================================
-Route::middleware('guest')->group(function () {
-    Route::get('hsnstudio/login', [UserLoginController::class, 'showLoginForm'])->name('user.login');
-    Route::post('hsnstudio/login', [UserLoginController::class, 'login'])->name('user.login.post');
 
-    Route::get('hsnstudio/register', [UserRegisterController::class, 'showRegisterForm'])->name('user.register');
-    Route::post('hsnstudio/register', [UserRegisterController::class, 'register'])->name('user.register.post');
-});
+// Login & Register
+Route::get('/hsnstudio/login', [UserLoginController::class, 'showLoginForm'])->name('user.login');
+Route::post('/hsnstudio/login', [UserLoginController::class, 'login'])->name('user.login.post');
 
-Route::post('hsnstudio/logout', [UserLoginController::class, 'logout'])->middleware('auth:web')->name('user.logout');
+Route::get('/hsnstudio/register', [UserRegisterController::class, 'showRegisterForm'])->name('user.register');
+Route::post('/hsnstudio/register', [UserRegisterController::class, 'register'])->name('user.register.post');
 
+// Logout
+Route::post('/hsnstudio/logout', [UserLoginController::class, 'logout'])->middleware('auth:web')->name('user.logout');
+
+// Dashboard & Settings (User)
 Route::middleware(['auth:web', 'verified'])->group(function () {
     Route::view('/dashboard', 'dashboard')->name('dashboard');
     Route::get('/account', [AccountController::class, 'index'])->name('account');
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
 
-    Route::redirect('settings', 'settings/profile');
+    Route::redirect('/settings', '/settings/profile');
 
     Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
     Volt::route('settings/password', 'settings.password')->name('settings.password');
     Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
 });
 
-
 // =====================================================
-// ADMIN AUTH & PANEL (GUARD: admin)
+// ADMIN AUTH & PANEL (LIVEWIRE VOLT)
 // =====================================================
-Route::prefix('admin')->group(function () {
-    // Admin Login (guest:admin)
-    Route::middleware('guest:admin')->group(function () {
-        Route::get('/login', [AdminLoginController::class, 'showLoginForm'])->name('admin.login');
-        Route::post('/login', [AdminLoginController::class, 'login'])->name('admin.login.post');
-    });
 
-    // Admin Logout
-    Route::post('/logout', [AdminLoginController::class, 'logout'])->middleware('auth:admin')->name('admin.logout');
+// Admin Login (middleware guest untuk guard admin)
+Route::middleware('guest:admin')->group(function () {
+    Route::get('/admin/login', [AdminLoginController::class, 'showLoginForm'])->name('admin.login');
+    Route::post('/admin/login', [AdminLoginController::class, 'login'])->name('admin.login.post');
+});
 
-    // Admin Panel
-    Route::middleware('auth:admin')->name('admin.')->group(function () {
-        Route::get('/', fn () => view('admin.dashboard'))->name('dashboard');
+// Admin Logout
+Route::post('/admin/logout', [AdminLoginController::class, 'logout'])->middleware('auth:admin')->name('admin.logout');
 
-        // Produk
-        Route::resource('products', AdminProductController::class);
+// Admin Panel
+Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(function () {
 
-        // Kategori
-        Route::resource('categories', AdminCategoryController::class);
+    // Dashboard
+    Volt::route('/', 'admin.dashboard')->name('dashboard');
 
-        // Jasa
-        Route::resource('services', AdminServiceController::class);
+    // Produk
+    Volt::route('products', 'admin.product.admin_product')->name('products.index');
+    Volt::route('products/create', 'admin.product.add_product')->name('products.create');
+    Volt::route('products/{id}/edit', 'admin.product.edit_product')->name('products.edit');
 
-        // Feedback
-        Route::get('/feedback', [AdminFeedbackController::class, 'index'])->name('feedback.index');
-        Route::get('/feedback/{id}', [AdminFeedbackController::class, 'show'])->name('feedback.show');
-        Route::delete('/feedback/{id}', [AdminFeedbackController::class, 'destroy'])->name('feedback.destroy');
+    // Kategori
+    Volt::route('categories', 'admin.categories.admin_category')->name('categories.index');
+    Volt::route('categories/create', 'admin.categories.add_category')->name('categories.create');
+    Volt::route('categories/{id}/edit', 'admin.categories.edit_category')->name('categories.edit');
 
-        // Transaksi
-        Route::get('/transactions', [TransactionController::class, 'index'])->name('transactions.index');
-        Route::get('/transactions/{id}', [TransactionController::class, 'show'])->name('transactions.show');
-    });
+    // Jasa (perbaiki typo servicess -> services)
+    Volt::route('services', 'admin.services.admin_services')->name('services.index');
+    Volt::route('services/create', 'admin.services.add_services')->name('services.create');
+    Volt::route('services/{id}/edit', 'admin.services.edit_services')->name('services.edit');
+
+    // Feedback
+    Volt::route('feedback', 'admin.feedbacks.admin_feedback')->name('feedback.index');
+    Volt::route('feedback/{id}', 'admin.feedbacks.show_feedback')->name('feedback.show');
+
+    // Transaksi
+    Volt::route('transactions', 'admin.transaction.admin_transaction')->name('transactions.index');
+    Volt::route('transactions/{id}', 'admin.transaction.show_transaction')->name('transactions.show');
 });
 
 // =====================================================
-// AUTH ROUTES (Fortify/Breeze/etc.)
+// FORTIFY/BREEZE AUTH SUPPORT
 // =====================================================
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
