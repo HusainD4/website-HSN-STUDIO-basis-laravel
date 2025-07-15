@@ -99,7 +99,7 @@ Route::middleware(['auth:web', 'verified'])->group(function () {
 // ADMIN AUTH & PANEL (LIVEWIRE VOLT)
 // =====================================================
 
-// Admin Login (middleware guest untuk guard admin)
+// Admin Login
 Route::middleware('guest:admin')->group(function () {
     Route::get('/admin/login', [AdminLoginController::class, 'showLoginForm'])->name('admin.login');
     Route::post('/admin/login', [AdminLoginController::class, 'login'])->name('admin.login.post');
@@ -124,10 +124,10 @@ Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(functi
     Volt::route('categories/create', 'admin.categories.add_category')->name('categories.create');
     Volt::route('categories/{id}/edit', 'admin.categories.edit_category')->name('categories.edit');
 
-    // Jasa (perbaiki typo servicess -> services)
-    Volt::route('services', 'admin.services.admin_services')->name('services.index');
-    Volt::route('services/create', 'admin.services.add_services')->name('services.create');
-    Volt::route('services/{id}/edit', 'admin.services.edit_services')->name('services.edit');
+    // Jasa
+    Volt::route('services', 'admin.servicess.admin_services')->name('services.index');
+    Volt::route('services/create', 'admin.servicess.add_services')->name('services.create');
+    Volt::route('services/{id}/edit', 'admin.servicess.edit_services')->name('services.edit');
 
     // Feedback
     Volt::route('feedback', 'admin.feedbacks.admin_feedback')->name('feedback.index');
