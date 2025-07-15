@@ -12,6 +12,7 @@
       border-radius: 1.25rem;
       box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
       border: 1px solid #bfdbfe;
+      padding: 2rem;
     }
 
     h1 {
@@ -39,9 +40,11 @@
     }
 
     table {
+      width: 100%;
       border-radius: 0.75rem;
       overflow: hidden;
       background-color: #ffffff;
+      border-collapse: collapse;
     }
 
     thead tr {
@@ -52,22 +55,18 @@
       font-weight: 700;
       color: #1e3a8a;
       text-transform: uppercase;
-      letter-spacing: 0.05em;
-      padding: 0.75rem 1.25rem;
+      padding: 0.75rem 1rem;
+      text-align: left;
     }
 
     tbody tr:hover {
-      background-color: #e0f2fe;
+      background-color: #f0f9ff;
     }
 
     tbody td {
-      padding: 0.75rem 1.25rem;
+      padding: 0.75rem 1rem;
       color: #1e3a8a;
       vertical-align: middle;
-    }
-
-    .text-center {
-      text-align: center;
     }
 
     tbody img {
@@ -78,7 +77,7 @@
       border: 1px solid #a5d8ff;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
       cursor: pointer;
-      transition: 0.2s ease-in-out;
+      transition: transform 0.2s ease-in-out;
     }
 
     tbody img:hover {
@@ -93,20 +92,15 @@
       top: 0;
       width: 100%;
       height: 100%;
-      overflow: auto;
-      background-color: rgba(0, 0, 0, 0.7);
+      background-color: rgba(0, 0, 0, 0.75);
     }
 
     .modal-content {
       margin: 5% auto;
       display: block;
       max-width: 80%;
-      border-radius: 12px;
-      box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
-    }
-
-    .modal-content:hover {
-      box-shadow: 0 0 30px rgba(255, 255, 255, 0.4);
+      border-radius: 1rem;
+      box-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
     }
 
     .modal-close {
@@ -118,15 +112,22 @@
       font-weight: bold;
       cursor: pointer;
     }
+
+    .pagination {
+      margin-top: 1.5rem;
+    }
   </style>
 
   <div class="p-6 max-w-7xl mx-auto">
-    <h1 class="text-3xl font-extrabold mb-6">Daftar Produk</h1>
+    {{-- Header --}}
+    <div class="flex items-center justify-between mb-6">
+      <h1 class="text-3xl font-extrabold">📦 Daftar Produk</h1>
+      <a href="{{ route('admin.products.create') }}" class="btn-action">+ Tambah Produk</a>
+    </div>
 
-    <a href="{{ route('admin.products.create') }}" class="btn-action mb-6 inline-block">+ Tambah Produk</a>
-
-    <div class="overflow-x-auto rounded-xl shadow-md border border-pink-200">
-      <table class="min-w-[900px] w-full divide-y divide-blue-200 text-left text-sm">
+    {{-- Tabel Produk --}}
+    <div class="overflow-x-auto rounded-xl shadow border border-pink-200">
+      <table class="min-w-[900px] text-sm">
         <thead>
           <tr>
             <th>#</th>
@@ -146,7 +147,6 @@
                 @if($product->image)
                   <img src="{{ asset('storage/' . $product->image) }}"
                        alt="{{ $product->name }}"
-                       class="mx-auto"
                        onclick="showImageModal('{{ asset('storage/' . $product->image) }}')">
                 @else
                   <span class="text-blue-400 italic text-sm">Tidak ada</span>
@@ -157,17 +157,15 @@
               </td>
               <td class="text-blue-600">{{ $product->category->name ?? '-' }}</td>
               <td class="text-blue-600 truncate" title="{{ $product->description ?? '-' }}">
-                {{ $product->description ?? '-' }}
+                {{ Str::limit($product->description, 50) }}
               </td>
               <td class="font-semibold text-blue-900">
                 Rp {{ number_format($product->price, 0, ',', '.') }}
               </td>
               <td class="text-center space-x-2">
                 <a href="{{ route('admin.products.edit', $product->id) }}" class="btn-action">✏️ Edit</a>
-                <form action="{{ route('admin.products.destroy', $product->id) }}"
-                      method="POST"
-                      onsubmit="return confirm('Yakin ingin menghapus produk ini?')"
-                      class="inline">
+                <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST"
+                      class="inline" onsubmit="return confirm('Yakin ingin menghapus produk ini?')">
                   @csrf
                   @method('DELETE')
                   <button type="submit" class="btn-action">🗑️ Hapus</button>
@@ -176,7 +174,7 @@
             </tr>
           @empty
             <tr>
-              <td colspan="7" class="text-center py-10 text-blue-500 italic text-lg">
+              <td colspan="7" class="text-center py-8 text-blue-500 italic text-lg">
                 Belum ada produk tersedia. 🌸
               </td>
             </tr>
@@ -184,9 +182,14 @@
         </tbody>
       </table>
     </div>
+
+    {{-- Pagination --}}
+    <div class="pagination">
+      {{ $products->links() }}
+    </div>
   </div>
 
-  {{-- Modal Viewer --}}
+  {{-- Modal Image Viewer --}}
   <div id="imageModal" class="modal" onclick="closeModal()">
     <span class="modal-close" onclick="closeModal()">&times;</span>
     <img class="modal-content" id="modalImage">

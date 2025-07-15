@@ -158,7 +158,8 @@ Route::middleware(['auth', 'is.admin'])->prefix('admin')->name('admin.')->group(
     Route::get('transactions', [AdminTransactionController::class, 'index'])->name('transactions.index');
     Route::get('transactions/{transaction}', [AdminTransactionController::class, 'show'])->name('transactions.show');
     Route::post('transactions/{transaction}/update-status', [AdminTransactionController::class, 'updateStatus'])->name('transactions.updateStatus');
-    Route::patch('/transaction-items/{item}/action', [AdminTransactionController::class, 'updateAction'])->name('admin.transaction-items.updateAction');
+    // Route::patch('/transaction-items/{item}/action', [AdminTransactionController::class, 'updateAction'])->name('admin.transaction-items.updateAction');
+    Route::patch('/admin/transactionitem/{transactionItem}/action', [TransactionItemController::class, 'updateAction']);
 });
 
 /*

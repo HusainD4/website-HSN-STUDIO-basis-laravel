@@ -2,7 +2,7 @@
 
 <style>
   body {
-    background-color: #fdf2f8; /* pink-50 */
+    background-color: #a5d8ff, #ffffff, #ffc8dd;
   }
 
   .form-input,

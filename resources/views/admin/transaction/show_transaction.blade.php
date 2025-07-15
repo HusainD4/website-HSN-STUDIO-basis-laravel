@@ -13,17 +13,26 @@
             border-color: #ffc8dd;
             color: #d6336c;
             font-weight: 600;
+            padding: 0.4rem 0.75rem;
         }
 
         .btn-update {
             background-color: #ffc8dd;
             color: #72163c;
             font-weight: 600;
+            cursor: pointer;
+            border: 1px solid #ffc8dd;
+            transition: background-color 0.3s, color 0.3s;
         }
 
         .btn-update:hover {
             background-color: #faa2c1;
             color: #500724;
+        }
+
+        .btn-update:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
         }
 
         .badge {
@@ -63,13 +72,13 @@
             <p class="text-lg text-blue-700">ID Transaksi: #{{ $transaction->id }}</p>
         </div>
 
-        {{-- Alert --}}
+        {{-- Alert sukses --}}
         <div id="success-alert" class="hidden bg-green-100 border-l-4 border-green-400 text-green-800 p-4 rounded-lg mb-6" role="alert">
             <p class="font-bold">Yeay! ✅</p>
             <p id="success-message">Status pesanan berhasil diupdate!</p>
         </div>
 
-        {{-- Grid --}}
+        {{-- Grid utama --}}
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
             {{-- Info Pembeli --}}
@@ -105,7 +114,7 @@
                                             <div class="text-sm">{{ $item->quantity }} × Rp {{ number_format($item->price, 0, ',', '.') }}</div>
                                         </td>
                                         <td class="px-6 py-4">
-                                            <select id="action-select-{{ $item->id }}" class="w-full rounded-xl border shadow select-pastel">
+                                            <select id="action-select-{{ $item->id }}" class="w-full rounded-xl border shadow select-pastel" aria-label="Pilih status produk">
                                                 @foreach(['pending', 'cancel', 'dikirim', 'sukses'] as $status)
                                                     <option value="{{ $status }}" @if($item->action === $status) selected @endif>
                                                         {{ ucfirst($status) }}
@@ -114,7 +123,11 @@
                                             </select>
                                         </td>
                                         <td class="px-6 py-4">
-                                            <button data-id="{{ $item->id }}" class="update-button btn-update px-5 py-2 rounded-full border border-pink-300 hover:shadow-lg transition">
+                                            <button
+                                                data-id="{{ $item->id }}"
+                                                class="update-button btn-update px-5 py-2 rounded-full border border-pink-300 hover:shadow-lg transition"
+                                                type="button"
+                                            >
                                                 Update
                                             </button>
                                         </td>
@@ -136,11 +149,12 @@
         {{-- Tombol Kembali --}}
         <div class="text-center mt-10">
             <a href="{{ route('admin.transactions.index') }}"
-            class="inline-flex items-center px-6 py-3 border-2 border-pink-300 bg-[#a5d8ff] text-pink-800 rounded-full text-lg font-bold shadow-sm hover:bg-[#ffc8dd] hover:text-pink-900 transition-all duration-300 hover:scale-105">
+                class="inline-flex items-center px-6 py-3 border-2 border-pink-300 bg-[#a5d8ff] text-pink-800 rounded-full text-lg font-bold shadow-sm hover:bg-[#ffc8dd] hover:text-pink-900 transition-all duration-300 hover:scale-105"
+            >
                 ← Kembali ke Daftar
             </a>
         </div>
-
+    </div>
 
     @push('scripts')
         <script>
@@ -151,9 +165,10 @@
                         const select = document.getElementById(`action-select-${itemId}`);
                         const newAction = select.value;
                         const originalText = this.innerHTML;
+                        const button = this;
 
-                        this.disabled = true;
-                        this.innerHTML = `<svg class="animate-spin h-5 w-5 mx-auto text-pink-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        button.disabled = true;
+                        button.innerHTML = `<svg class="animate-spin h-5 w-5 mx-auto text-pink-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
                         </svg>`;
@@ -168,20 +183,20 @@
                         })
                         .then(response => {
                             if (!response.ok) {
-                                return response.json().then(err => { throw new Error(err.message); });
+                                return response.json().then(err => { throw new Error(err.message || 'Terjadi kesalahan.'); });
                             }
                             return response.json();
                         })
                         .then(data => {
                             const alertBox = document.getElementById('success-alert');
-                            document.getElementById('success-message').textContent = data.message;
+                            document.getElementById('success-message').textContent = data.message || 'Status pesanan berhasil diupdate!';
                             alertBox.classList.remove('hidden');
                             setTimeout(() => alertBox.classList.add('hidden'), 3000);
                         })
                         .catch(err => alert(err.message))
                         .finally(() => {
-                            this.disabled = false;
-                            this.innerHTML = originalText;
+                            button.disabled = false;
+                            button.innerHTML = originalText;
                         });
                     });
                 });

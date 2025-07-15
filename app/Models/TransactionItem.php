@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class TransactionItem extends Model
 {
+    // Izinkan pengisian massal untuk kolom-kolom berikut
     protected $fillable = [
         'transaction_id',
         'product_id',
@@ -13,11 +14,14 @@ class TransactionItem extends Model
         'quantity',
         'price',
         'subtotal',
-        'action', // pastikan kolom ini juga bisa diisi
+        'action', // penting agar bisa diupdate via request PATCH
     ];
 
+    /**
+     * Relasi ke model Transaction
+     */
     public function transaction()
     {
-        return $this->belongsTo(\App\Models\Transaction::class);
+        return $this->belongsTo(Transaction::class);
     }
 }

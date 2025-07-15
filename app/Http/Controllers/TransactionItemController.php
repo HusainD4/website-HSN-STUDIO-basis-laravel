@@ -10,30 +10,35 @@ class TransactionItemController extends Controller
 {
     /**
      * Update status (action) dari item transaksi.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param \App\Models\TransactionItem $transactionItem
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function updateAction(Request $request, TransactionItem $item)
+    public function updateAction(Request $request, TransactionItem $transactionItem)
     {
-        // Validasi request
+        // Validasi input
         $validated = $request->validate([
             'action' => ['required', 'in:pending,cancel,dikirim,sukses'],
         ]);
 
-        // Update dan simpan ke database
-        $item->action = $validated['action'];
+        try {
+            $transactionItem->action = $validated['action'];
+            $transactionItem->save();
 
-        if ($item->save()) {
             return response()->json([
                 'success' => true,
                 'message' => 'Status berhasil diperbarui.',
                 'data' => [
-                    'id' => $item->id,
-                    'action' => $item->action,
+                    'id' => $transactionItem->id,
+                    'action' => $transactionItem->action,
                 ],
             ]);
-        } else {
+        } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'message' => 'Gagal menyimpan status.',
+                'message' => 'Terjadi kesalahan saat memperbarui status.',
+                'error' => $e->getMessage(),
             ], 500);
         }
     }
