@@ -12,7 +12,8 @@ class ServicesController extends Controller
     // Tampilkan list semua service
     public function index()
     {
-        $services = Service::all();
+        $services = Service::paginate(10); // jumlah item per halaman bisa disesuaikan
+
         return view('admin.servicess.admin_services', compact('services'));
     }
 

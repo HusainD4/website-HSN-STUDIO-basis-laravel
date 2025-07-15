@@ -9,7 +9,7 @@
         
         <!-- Logo -->
         <div class="mb-4">
-            <img src="{{ asset('images/hsn-logo.png') }}" alt="Logo HSN Studio" class="img-fluid" style="max-width: 200px;">
+            <img src="{{ asset('images/LogoHsnStudio.png') }}" alt="Logo HSN Studio" class="img-fluid" style="max-width: 200px;">
         </div>
         
         <!-- Sejarah -->

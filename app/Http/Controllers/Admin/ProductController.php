@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\Category;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
@@ -12,15 +13,14 @@ class ProductController extends Controller
 {
     public function index()
     {
-        // Ambil semua produk dengan relasi kategori
-        $products = Product::with('category')->get();
+        // Paginate supaya gak load semua produk sekaligus
+        $products = Product::with('category')->latest()->paginate(10);
         return view('admin.product.admin_product', compact('products'));
     }
 
     public function create()
     {
-        // Ambil semua kategori untuk dropdown
-        $categories = \App\Models\Category::all();
+        $categories = Category::all();
         return view('admin.product.add_product', compact('categories'));
     }
 
@@ -29,17 +29,17 @@ class ProductController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric',
+            'price' => 'required|numeric|min:0',
+            'description' => 'required|string',
             'image' => 'nullable|image|max:2048',
         ]);
 
         if ($request->hasFile('image')) {
-            // Simpan file di storage/app/public/products dan simpan path relatif di DB
             $file = $request->file('image');
             $filename = Str::slug($data['name']) . '-' . time() . '.' . $file->getClientOriginalExtension();
-            $file->storeAs('public/products', $filename);
-            $data['image'] = 'products/' . $filename;
+            // Simpan file ke disk 'public', folder products
+            $path = $file->storeAs('products', $filename, 'public');
+            $data['image'] = $path;  // path akan seperti 'products/nama-file.jpg'
         }
 
         Product::create($data);
@@ -47,20 +47,20 @@ class ProductController extends Controller
         return redirect()->route('admin.products.index')->with('success', 'Produk berhasil ditambahkan');
     }
 
-    public function edit(int $id)
+    public function edit(string $id)
     {
         $product = Product::findOrFail($id);
-        $categories = \App\Models\Category::all();
+        $categories = Category::all();
         return view('admin.product.edit_product', compact('product', 'categories'));
     }
 
-    public function update(Request $request, int $id)
+    public function update(Request $request, string $id)
     {
         $validated = $request->validate([
-            'category_id' => 'required|exists:categories,id',
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric',
+            'category_id' => 'required|exists:categories,id',
+            'description' => 'required|string',
+            'price' => 'required|numeric|min:0',
             'image' => 'nullable|image|max:2048',
         ]);
 
@@ -68,29 +68,27 @@ class ProductController extends Controller
 
         if ($request->hasFile('image')) {
             // Hapus gambar lama jika ada
-            if ($product->image && Storage::exists('public/' . $product->image)) {
-                Storage::delete('public/' . $product->image);
+            if ($product->image && Storage::disk('public')->exists($product->image)) {
+                Storage::disk('public')->delete($product->image);
             }
 
-            // Simpan gambar baru
             $file = $request->file('image');
             $filename = Str::slug($validated['name']) . '-' . time() . '.' . $file->getClientOriginalExtension();
-            $file->storeAs('public/products', $filename);
-            $validated['image'] = 'products/' . $filename;
+            $path = $file->storeAs('products', $filename, 'public');
+            $validated['image'] = $path;
         }
 
         $product->update($validated);
 
-        return redirect()->route('admin.products.index')->with('success', 'Produk berhasil diupdate');
+        return redirect()->route('admin.products.index')->with('success', 'Produk berhasil diperbarui');
     }
 
-    public function destroy(int $id)
+    public function destroy(string $id)
     {
         $product = Product::findOrFail($id);
 
-        // Hapus file gambar jika ada
-        if ($product->image && Storage::exists('public/' . $product->image)) {
-            Storage::delete('public/' . $product->image);
+        if ($product->image && Storage::disk('public')->exists($product->image)) {
+            Storage::disk('public')->delete($product->image);
         }
 
         $product->delete();

@@ -54,7 +54,7 @@
                             <span class="d-none d-lg-inline">{{ auth()->user()->email }}</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="profileDropdown">
-                            <li><a class="dropdown-item" href="{{ route('settings') }}">Settings</a></li>
+                            <li><a href="{{ route('settings.index') }}">Settings</a></li>
                             <li><a class="dropdown-item" href="{{ route('account') }}">Account</a></li>
                             <li><a class="dropdown-item" href="{{ route('cart.index') }}">
                                 Keranjang 

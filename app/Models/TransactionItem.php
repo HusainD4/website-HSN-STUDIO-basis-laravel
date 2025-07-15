@@ -13,6 +13,7 @@ class TransactionItem extends Model
         'quantity',
         'price',
         'subtotal',
+        'action', // pastikan kolom ini juga bisa diisi
     ];
 
     public function transaction()

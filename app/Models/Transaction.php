@@ -21,4 +21,6 @@ class Transaction extends Model
     {
         return $this->hasMany(\App\Models\TransactionItem::class);
     }
+
+
 }

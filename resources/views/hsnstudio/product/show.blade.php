@@ -41,10 +41,10 @@
                             🛒 Masukkan ke Keranjang
                         </button>
 
-                        <a href="{{ url('/checkout?product_id=' . $product->id . '&quantity=1') }}" 
-                           class="btn btn-success">
+                        <!-- Tombol trigger modal -->
+                        <button type="button" id="buyNowBtn" class="btn btn-success">
                             🛍️ Beli Sekarang
-                        </a>
+                        </button>
                     </div>
                 </form>
 
@@ -56,4 +56,60 @@
         </div>
     </div>
 </section>
+
+<!-- Modal Checkout -->
+<div class="modal fade" id="checkoutModal" tabindex="-1" aria-labelledby="checkoutModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <form action="{{ route('cart.checkout') }}" method="POST" class="modal-content">
+            @csrf
+            <input type="hidden" name="product_id" value="{{ $product->id }}">
+            <input type="hidden" name="quantity" id="modalQuantity" value="1">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="checkoutModalLabel">Form Checkout</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Tutup"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="name">Nama</label>
+                    <input type="text" class="form-control" name="name" required>
+                </div>
+                <div class="mb-3">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" name="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="phone">Nomor HP</label>
+                    <input type="text" class="form-control" name="phone" required>
+                </div>
+                <div class="mb-3">
+                    <label for="address">Alamat</label>
+                    <textarea class="form-control" name="address" rows="3" required></textarea>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" class="btn btn-primary">Proses Checkout</button>
+            </div>
+        </form>
+    </div>
+</div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var buyNowBtn = document.getElementById('buyNowBtn');
+        var quantityInput = document.getElementById('quantity');
+        var modalQuantity = document.getElementById('modalQuantity');
+
+        buyNowBtn.addEventListener('click', function () {
+            // Ambil jumlah dari input dan set ke hidden modal input
+            modalQuantity.value = quantityInput.value || 1;
+
+            // Tampilkan modal Bootstrap (pastikan bootstrap.bundle.js sudah di-include)
+            var checkoutModal = new bootstrap.Modal(document.getElementById('checkoutModal'));
+            checkoutModal.show();
+        });
+    });
+</script>
+@endpush
