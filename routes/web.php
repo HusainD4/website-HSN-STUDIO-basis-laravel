@@ -3,142 +3,151 @@
 use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
 
-// Public Controllers
+// Import Controllers with Aliases to prevent name conflicts
+// =================================================================
+
+// --- Public/Frontend Controllers ---
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProductController as FrontendProductController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\ServiceController;
+use App\Http\Controllers\CategoryController as FrontendCategoryController;
+use App\Http\Controllers\ServiceController as FrontendServiceController;
 use App\Http\Controllers\TentangKamiController;
 use App\Http\Controllers\GalleryController;
-use App\Http\Controllers\FeedbackController;
+use App\Http\Controllers\FeedbackController as FrontendFeedbackController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\AccountController;
+use App\Http\Controllers\SettingsController;
 
-// Auth Controllers
-use App\Http\Controllers\Auth\AdminLoginController;
+
+// --- Authentication Controllers ---
+// Catatan: AdminLoginController sekarang akan menggunakan guard standar
+use App\Http\Controllers\Admin\AdminLoginController;
 use App\Http\Controllers\Auth\UserLoginController;
 use App\Http\Controllers\Auth\UserRegisterController;
 
-// User Controllers
-use App\Http\Controllers\AccountController;
-use App\Http\Controllers\Admin\SettingsController;
+
+/*
+|--------------------------------------------------------------------------
+| WEB ROUTES (Versi Lengkap)
+|--------------------------------------------------------------------------
+|
+| File ini mengatur semua routing untuk aplikasi web, termasuk:
+| 1. Rute Publik (dapat diakses semua orang)
+| 2. Rute Otentikasi & Dasbor Pengguna
+| 3. Rute Otentikasi & Panel Admin
+|
+*/
 
 // =====================================================
 // PUBLIC ROUTES
 // =====================================================
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
-// Produk
+// Halaman Produk, Kategori, Jasa (Frontend)
 Route::get('/produk', [FrontendProductController::class, 'showProducts'])->name('produk.index');
 Route::get('/produk/{id}', [FrontendProductController::class, 'show'])->name('produk.show');
+Route::get('/kategori', [FrontendCategoryController::class, 'index'])->name('kategori.index');
+Route::get('/kategori/{slug}', [FrontendCategoryController::class, 'show'])->name('kategori.show');
+Route::get('/jasa', [FrontendServiceController::class, 'index'])->name('jasa.index');
+Route::get('/jasa/{id}', [FrontendServiceController::class, 'show'])->name('jasa.detail');
 
-// Kategori
-Route::get('/kategori', [CategoryController::class, 'index'])->name('kategori.index');
-Route::get('/kategori/{slug}', [CategoryController::class, 'show'])->name('kategori.show');
-
-// Jasa
-Route::get('/jasa', [ServiceController::class, 'index'])->name('jasa.index');
-Route::get('/jasa/{id}', [ServiceController::class, 'show'])->name('jasa.detail');
-
-// Tentang Kami
+// Halaman Tentang Kami, Kontak, dll.
 Route::view('/tentang-kami', 'hsnstudio.tentangkami.tentang')->name('tentang.kami');
 Route::get('/portofolio', [TentangKamiController::class, 'portofolio'])->name('portofolio');
 Route::get('/logo-brand', [TentangKamiController::class, 'logoBrand'])->name('tentangkami.logobrand');
-
-// Galeri
 Route::get('/galeri-kami', [GalleryController::class, 'index'])->name('galeri.kami');
-
-// Media Sosial
 Route::view('/media-sosial', 'hsnstudio.kontak.mediasosial.medsos')->name('media.sosial');
 
-// Feedback
-Route::prefix('kritiksaran')->group(function () {
-    Route::get('/', [FeedbackController::class, 'index'])->name('kritiksaran.index');
-    Route::get('/create', [FeedbackController::class, 'create'])->name('kritiksaran.create');
-    Route::post('/', [FeedbackController::class, 'store'])->name('kritiksaran.store');
-    Route::get('/{id}', [FeedbackController::class, 'show'])->name('kritiksaran.show');
-    Route::delete('/{id}', [FeedbackController::class, 'destroy'])->name('kritiksaran.destroy');
+// Halaman Kritik & Saran (Frontend)
+Route::resource('kritiksaran', FrontendFeedbackController::class)->except(['edit', 'update']);
+
+// Halaman Keranjang Belanja (Cart)
+Route::prefix('cart')->name('cart.')->group(function () {
+    Route::get('/', [CartController::class, 'index'])->name('index');
+    Route::post('/add/{id}', [CartController::class, 'add'])->name('add');
+    Route::delete('/remove/{id}', [CartController::class, 'remove'])->name('remove');
+    Route::post('/clear', [CartController::class, 'clear'])->name('clear');
+    // Middleware 'auth' sudah benar (sama dengan 'auth:web')
+    Route::post('/checkout', [CartController::class, 'checkout'])->middleware('auth')->name('checkout');
 });
 
-// Cart
-Route::prefix('cart')->group(function () {
-    Route::post('/add/{id}', [CartController::class, 'add'])->name('cart.add');
-    Route::get('/', [CartController::class, 'index'])->name('cart.index');
-    Route::delete('/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
-    Route::post('/clear', [CartController::class, 'clear'])->name('cart.clear');
-    Route::post('/checkout', [CartController::class, 'checkout'])->middleware('auth:web')->name('cart.checkout');
-});
 
 // =====================================================
-// USER AUTH & DASHBOARD
+// USER AUTH & DASHBOARD ROUTES
 // =====================================================
 
-// Login & Register
+// Rute untuk Login, Register & Logout Pengguna Biasa
 Route::get('/hsnstudio/login', [UserLoginController::class, 'showLoginForm'])->name('user.login');
 Route::post('/hsnstudio/login', [UserLoginController::class, 'login'])->name('user.login.post');
-
-Route::get('/hsnstudio/register', [UserRegisterController::class, 'showRegisterForm'])->name('user.register');
+Route::get('/hsnstudio/register', [UserRegisterController::class, 'showRegistrationForm'])->name('user.register');
 Route::post('/hsnstudio/register', [UserRegisterController::class, 'register'])->name('user.register.post');
+Route::post('/hsnstudio/logout', [UserLoginController::class, 'logout'])->middleware('auth')->name('user.logout');
 
-// Logout
-Route::post('/hsnstudio/logout', [UserLoginController::class, 'logout'])->middleware('auth:web')->name('user.logout');
-
-// Dashboard & Settings (User)
-Route::middleware(['auth:web', 'verified'])->group(function () {
+// Rute yang memerlukan login sebagai pengguna biasa (guard: web)
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::view('/dashboard', 'dashboard')->name('dashboard');
     Route::get('/account', [AccountController::class, 'index'])->name('account');
-    Route::get('/settings', [SettingsController::class, 'index'])->name('settings');
 
-    Route::redirect('/settings', '/settings/profile');
-
-    Volt::route('settings/profile', 'settings.profile')->name('settings.profile');
-    Volt::route('settings/password', 'settings.password')->name('settings.password');
-    Volt::route('settings/appearance', 'settings.appearance')->name('settings.appearance');
+    // Pengaturan Akun Pengguna
+    Route::prefix('settings')->name('settings.')->group(function() {
+        Route::get('/', [SettingsController::class, 'index'])->name('index');
+        Route::redirect('/', '/settings/profile');
+        Volt::route('profile', 'settings.profile')->name('profile');
+        Volt::route('password', 'settings.password')->name('password');
+        Volt::route('appearance', 'settings.appearance')->name('appearance');
+    });
 });
 
+
 // =====================================================
-// ADMIN AUTH & PANEL (LIVEWIRE VOLT)
+// ADMIN AUTH & PANEL ROUTES (SUDAH DIPERBAIKI)
 // =====================================================
 
-// Admin Login
-Route::middleware('guest:admin')->group(function () {
-    Route::get('/admin/login', [AdminLoginController::class, 'showLoginForm'])->name('admin.login');
-    Route::post('/admin/login', [AdminLoginController::class, 'login'])->name('admin.login.post');
+// Rute untuk Login & Logout Admin
+Route::prefix('admin')->name('admin.')->group(function() {
+    // Menggunakan 'guest' standar, untuk tamu yang belum login
+    Route::middleware('guest')->group(function () {
+        Route::get('login', [AdminLoginController::class, 'showLoginForm'])->name('login');
+        Route::post('login', [AdminLoginController::class, 'login'])->name('login.post');
+    });
+    // Menggunakan 'auth' standar, karena pengecekan peran sudah dilakukan di controller/middleware
+    Route::post('logout', [AdminLoginController::class, 'logout'])->middleware('auth')->name('logout');
 });
 
-// Admin Logout
-Route::post('/admin/logout', [AdminLoginController::class, 'logout'])->middleware('auth:admin')->name('admin.logout');
+// Semua rute di dalam grup ini akan memiliki awalan /admin
+// dan memerlukan login sebagai admin (dicek oleh middleware 'is.admin')
+Route::middleware(['auth', 'is.admin'])->prefix('admin')->name('admin.')->group(function () {
 
-// Admin Panel
-Route::middleware(['auth:admin'])->prefix('admin')->name('admin.')->group(function () {
-
-    // Dashboard
+    // Dashboard Admin
     Volt::route('/', 'admin.dashboard')->name('dashboard');
 
-    // Produk
-    Volt::route('products', 'admin.product.admin_product')->name('products.index');
-    Volt::route('products/create', 'admin.product.add_product')->name('products.create');
-    Volt::route('products/{id}/edit', 'admin.product.edit_product')->name('products.edit');
-
-    // Kategori
+    // Kategori -> merujuk ke folder 'livewire/admin/categories'
     Volt::route('categories', 'admin.categories.admin_category')->name('categories.index');
     Volt::route('categories/create', 'admin.categories.add_category')->name('categories.create');
-    Volt::route('categories/{id}/edit', 'admin.categories.edit_category')->name('categories.edit');
+    Volt::route('categories/{category}/edit', 'admin.categories.edit_category')->name('categories.edit');
 
-    // Jasa
+    // Produk -> merujuk ke folder 'livewire/admin/product'
+    Volt::route('products', 'admin.product.admin_product')->name('products.index');
+    Volt::route('products/create', 'admin.product.add_product')->name('products.create');
+    Volt::route('products/{product}/edit', 'admin.product.edit_product')->name('products.edit');
+
+    // Jasa (Services) -> merujuk ke folder 'livewire/admin/servicess'
     Volt::route('services', 'admin.servicess.admin_services')->name('services.index');
     Volt::route('services/create', 'admin.servicess.add_services')->name('services.create');
-    Volt::route('services/{id}/edit', 'admin.servicess.edit_services')->name('services.edit');
+    Volt::route('services/{service}/edit', 'admin.servicess.edit_services')->name('services.edit');
 
-    // Feedback
+    // Kritik & Saran (Feedback) -> merujuk ke folder 'livewire/admin/feedbacks'
     Volt::route('feedback', 'admin.feedbacks.admin_feedback')->name('feedback.index');
-    Volt::route('feedback/{id}', 'admin.feedbacks.show_feedback')->name('feedback.show');
 
-    // Transaksi
+    // Transaksi -> merujuk ke folder 'livewire/admin/transaction'
     Volt::route('transactions', 'admin.transaction.admin_transaction')->name('transactions.index');
-    Volt::route('transactions/{id}', 'admin.transaction.show_transaction')->name('transactions.show');
+    Volt::route('transactions/{transaction}', 'admin.transaction.show_transaction')->name('transactions.show');
 });
 
+
 // =====================================================
-// FORTIFY/BREEZE AUTH SUPPORT
+// BREEZE/FORTIFY AUTH SUPPORT (JIKA ADA)
 // =====================================================
+// File ini biasanya untuk rute seperti verifikasi email, lupa password, dll.
+// untuk sistem otentikasi pengguna biasa.
 require __DIR__ . '/auth.php';

@@ -7,8 +7,8 @@
     <h2>Profil Pengguna</h2>
     <div class="card">
         <div class="card-body">
-            <p><strong>Nama:</strong> {{ $user->name }}</p>
-            <p><strong>Email:</strong> {{ $user->email }}</p>
+            <p><strong>Nama:</strong> {{ auth()->user()->name ?? '-' }}</p>
+            <p><strong>Email:</strong> {{ auth()->user()->email ?? '-' }}</p>
             {{-- Tambah kolom lain sesuai tabel pengguna --}}
         </div>
     </div>

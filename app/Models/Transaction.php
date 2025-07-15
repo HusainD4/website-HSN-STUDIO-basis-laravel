@@ -6,10 +6,19 @@ use Illuminate\Database\Eloquent\Model;
 
 class Transaction extends Model
 {
-    protected $fillable = ['name', 'email', 'phone', 'address', 'total'];
+    protected $fillable = [
+        'name',
+        'email',
+        'phone',
+        'address',
+        'total',
+    ];
 
+    /**
+     * Relasi: Satu transaksi memiliki banyak item transaksi
+     */
     public function items()
     {
-        return $this->hasMany(TransactionItem::class);
+        return $this->hasMany(\App\Models\TransactionItem::class);
     }
 }

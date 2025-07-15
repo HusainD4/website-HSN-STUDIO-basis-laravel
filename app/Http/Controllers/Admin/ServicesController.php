@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Service;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
 class ServicesController extends Controller
@@ -38,7 +37,6 @@ class ServicesController extends Controller
         // Handle upload gambar jika ada
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('services', 'public');
-            // Simpan path yang bisa diakses via Storage::url()
             $data['image_url'] = $path;
         }
 
@@ -48,14 +46,14 @@ class ServicesController extends Controller
     }
 
     // Form edit service
-    public function edit($id)
+    public function edit(int $id)
     {
         $service = Service::findOrFail($id);
         return view('admin.servicess.edit_services', compact('service'));
     }
 
     // Update data service
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id)
     {
         $request->validate([
             'name'        => 'required|string|max:255',
@@ -84,7 +82,7 @@ class ServicesController extends Controller
     }
 
     // Hapus service
-    public function destroy($id)
+    public function destroy(int $id)
     {
         $service = Service::findOrFail($id);
 

@@ -9,7 +9,8 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $products = Product::with('category')->get();
+        // Ambil produk terbaru, misal 6 produk terakhir
+        $products = Product::with('category')->latest()->take(6)->get();
 
         return view('hsnstudio.homepage', compact('products'));
     }

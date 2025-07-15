@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class FeedbackController extends Controller
 {
     /**
-     * Menampilkan semua data kritik dan saran.
+     * Menampilkan semua data kritik dan saran untuk user.
      */
     public function index()
     {
@@ -43,7 +43,7 @@ class FeedbackController extends Controller
     /**
      * Menampilkan detail satu data kritik dan saran.
      */
-    public function show(string $id)
+    public function show($id)
     {
         $feedback = Feedback::findOrFail($id);
         return view('hsnstudio.kontak.kritiksaran_show', compact('feedback'));
@@ -52,17 +52,20 @@ class FeedbackController extends Controller
     /**
      * Menghapus satu data kritik dan saran berdasarkan ID.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
         $feedback = Feedback::findOrFail($id);
         $feedback->delete();
 
         return redirect()->route('kritiksaran.index')->with('success', 'Data kritik dan saran berhasil dihapus.');
     }
+
+    /**
+     * Menampilkan semua data kritik dan saran untuk admin.
+     */
     public function adminIndex()
     {
         $feedbacks = Feedback::latest()->paginate(10);
         return view('admin.feedbacks.admin_feedback', compact('feedbacks'));
     }
-
 }

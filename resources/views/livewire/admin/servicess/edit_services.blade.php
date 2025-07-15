@@ -1,79 +1,48 @@
-<x-layouts.app :title="'Edit Service - ' . $service->name">
-    <div class="container py-6">
-        <h1 class="mb-4 text-2xl font-semibold">Edit Service - {{ $service->name }}</h1>
+<x-layouts.app :title="'Edit Paket Jasa Foto Studio'">
+    <div class="max-w-xl mx-auto">
+        <h1 class="mb-6 text-2xl font-semibold text-pink-600">Edit Paket Jasa Foto Studio</h1>
 
-        <form action="{{ route('admin.services.update', $service->id) }}" method="POST" enctype="multipart/form-data">
+        <form action="{{ route('admin.services.update', $service->id) }}" method="POST" enctype="multipart/form-data" class="space-y-4">
             @csrf
             @method('PUT')
 
-            <div class="mb-4">
-                <label for="name" class="form-label">Nama Service</label>
-                <input 
-                    type="text" 
-                    name="name" 
-                    id="name" 
-                    class="form-control @error('name') is-invalid @enderror" 
-                    value="{{ old('name', $service->name) }}" 
-                    required
-                >
-                @error('name')
-                    <small class="text-danger">{{ $message }}</small>
-                @enderror
+            <div>
+                <label for="name" class="block mb-1 font-medium">Nama Paket</label>
+                <input type="text" name="name" id="name" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-300" value="{{ old('name', $service->name) }}" required>
+                @error('name') <small class="text-pink-600">{{ $message }}</small> @enderror
             </div>
 
-            <div class="mb-4">
-                <label for="description" class="form-label">Deskripsi</label>
-                <textarea 
-                    name="description" 
-                    id="description" 
-                    rows="4" 
-                    class="form-control @error('description') is-invalid @enderror" 
-                    required
-                >{{ old('description', $service->description) }}</textarea>
-                @error('description')
-                    <small class="text-danger">{{ $message }}</small>
-                @enderror
+            <div>
+                <label for="description" class="block mb-1 font-medium">Deskripsi</label>
+                <textarea name="description" id="description" rows="4" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-300">{{ old('description', $service->description) }}</textarea>
+                @error('description') <small class="text-pink-600">{{ $message }}</small> @enderror
             </div>
 
-            <div class="mb-4">
-                <label for="price" class="form-label">Harga</label>
-                <input 
-                    type="number" 
-                    name="price" 
-                    id="price" 
-                    class="form-control @error('price') is-invalid @enderror" 
-                    value="{{ old('price', $service->price) }}" 
-                    required
-                >
-                @error('price')
-                    <small class="text-danger">{{ $message }}</small>
-                @enderror
+            <div>
+                <label for="price" class="block mb-1 font-medium">Harga</label>
+                <input type="number" name="price" id="price" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-300" value="{{ old('price', $service->price) }}" required>
+                @error('price') <small class="text-pink-600">{{ $message }}</small> @enderror
             </div>
 
-            <div class="mb-4">
-                <label class="form-label">Gambar Saat Ini</label>
-                <div class="mb-2">
-                    @if($service->image_url)
-                        <img src="{{ Storage::url($service->image_url) }}" alt="{{ $service->name }}" class="h-12 mx-auto rounded-md object-cover" />
-                    @else
-                        <p class="text-muted">Tidak ada gambar</p>
-                    @endif
-                </div>
-                <label for="image" class="form-label">Ganti Gambar (Opsional)</label>
-                <input 
-                    type="file" 
-                    name="image" 
-                    id="image" 
-                    class="form-control @error('image') is-invalid @enderror" 
-                    accept="image/*"
-                >
-                @error('image')
-                    <small class="text-danger">{{ $message }}</small>
-                @enderror
+            <div>
+                <label class="block mb-1 font-medium">Gambar Saat Ini</label>
+                @if($service->image_url)
+                    <img src="{{ Storage::url($service->image_url) }}" class="h-32 rounded mb-2">
+                @else
+                    <span class="text-gray-500">Belum ada gambar</span>
+                @endif
             </div>
 
-            <button type="submit" class="btn btn-primary">Update</button>
-            <a href="{{ route('admin.services.index') }}" class="btn btn-secondary">Batal</a>
+            <div>
+                <label for="image" class="block mb-1 font-medium">Ganti Gambar</label>
+                <input type="file" name="image" id="image" class="w-full border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-pink-300" accept="image/*">
+                @error('image') <small class="text-pink-600">{{ $message }}</small> @enderror
+            </div>
+
+            <div class="flex gap-2">
+                <button type="submit" class="flex-1 bg-pink-500 text-white py-2 rounded hover:bg-pink-600">Update</button>
+                <a href="{{ route('admin.services.index') }}" class="flex-1 bg-gray-300 text-gray-700 py-2 rounded hover:bg-gray-400 text-center">Batal</a>
+            </div>
         </form>
     </div>
 </x-layouts.app>

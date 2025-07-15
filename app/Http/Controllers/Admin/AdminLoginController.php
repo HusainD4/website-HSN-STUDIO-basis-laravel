@@ -1,57 +1,73 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
 
 class AdminLoginController extends Controller
 {
+    /**
+     * Menampilkan form login untuk admin.
+     */
     public function showLoginForm()
     {
-        return view('admin.login');
+        return view('admin.login'); // Pastikan view ini ada di resources/views/admin/login.blade.php
     }
 
-    
-public function login(Request $request)
-{
-    $credentials = $request->validate([
-        'email' => ['required', 'email'],
-        'password' => ['required'],
-    ]);
+    /**
+     * Menangani permintaan login dari admin.
+     */
+    public function login(Request $request)
+    {
+        // 1. Validasi input dari form
+        $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+        ]);
 
-    // Coba login menggunakan guard 'admin'
-    if (Auth::guard('admin')->attempt($credentials)) {
-        
-        // --> TAMBAHKAN PENGECEKAN INI
-        $user = Auth::guard('admin')->user();
-        if ($user->role !== 'admin') {
-            // Jika role pengguna bukan admin, langsung logout
-            Auth::guard('admin')->logout();
-            return back()->withErrors([
-                'email' => 'Anda tidak memiliki hak akses sebagai admin.',
-            ])->onlyInput('email');
+        // 2. Coba lakukan otentikasi menggunakan guard standar ('web')
+        if (! Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
+            // Jika kredensial salah, kirim kembali dengan pesan error
+            throw ValidationException::withMessages([
+                'email' => 'Email atau password yang Anda masukkan salah.',
+            ]);
         }
-        // <-- AKHIR DARI PENGECEKAN
 
+        // 3. Jika kredensial benar, periksa apakah pengguna adalah admin
+        //    (Asumsi ada kolom 'is_admin' atau 'role' di tabel users)
+        if (! $request->user()->is_admin) { // <-- Ganti 'is_admin' jika nama kolom Anda berbeda, misal: $request->user()->role !== 'admin'
+            // Jika bukan admin, langsung logout lagi
+            Auth::logout();
+
+            // Kirim pesan error bahwa mereka tidak punya akses
+            throw ValidationException::withMessages([
+                'email' => 'Anda tidak memiliki hak akses sebagai admin.',
+            ]);
+        }
+
+        // 4. Jika berhasil login dan merupakan admin, regenerate session
         $request->session()->regenerate();
-        return redirect()->intended('/admin/dashboard');
+
+        // 5. Arahkan ke dashboard admin
+        return redirect()->intended(route('admin.dashboard'));
     }
 
-    return back()->withErrors([
-        'email' => 'Email atau password salah untuk admin.',
-    ])->onlyInput('email');
-}
-
+    /**
+     * Menangani permintaan logout dari admin.
+     */
     public function logout(Request $request)
     {
-        Auth::guard('admin')->logout();
+        // Gunakan guard standar untuk logout
+        Auth::logout();
 
+        // Invalidate session dan regenerate token untuk keamanan
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        // Mengarahkan ke halaman login admin, bukan pengguna
+        // Arahkan kembali ke halaman login admin
         return redirect()->route('admin.login');
     }
 }

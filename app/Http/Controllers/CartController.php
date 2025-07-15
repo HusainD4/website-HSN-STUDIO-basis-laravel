@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Transaction;
 use App\Models\TransactionItem;
-use Illuminate\Support\Facades\Session;
 
 class CartController extends Controller
 {
@@ -67,9 +66,9 @@ class CartController extends Controller
     // Proses Checkout
     public function checkout(Request $request)
     {
-        $cart = session('cart');
+        $cart = session('cart', []);
 
-        if (!$cart || count($cart) == 0) {
+        if (empty($cart)) {
             return redirect()->back()->with('error', 'Keranjang belanja kosong.');
         }
 

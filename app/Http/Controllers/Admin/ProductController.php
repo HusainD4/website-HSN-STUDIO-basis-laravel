@@ -29,6 +29,7 @@ class ProductController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
+            'description' => 'nullable|string',
             'price' => 'required|numeric',
             'image' => 'nullable|image|max:2048',
         ]);
@@ -38,7 +39,7 @@ class ProductController extends Controller
             $file = $request->file('image');
             $filename = Str::slug($data['name']) . '-' . time() . '.' . $file->getClientOriginalExtension();
             $file->storeAs('public/products', $filename);
-            $data['image'] = 'products/' . $filename;  // Simpan path lengkap relatif ke storage/app/public
+            $data['image'] = 'products/' . $filename;
         }
 
         Product::create($data);
@@ -46,15 +47,14 @@ class ProductController extends Controller
         return redirect()->route('admin.products.index')->with('success', 'Produk berhasil ditambahkan');
     }
 
-
-    public function edit(string $id)
+    public function edit(int $id)
     {
         $product = Product::findOrFail($id);
         $categories = \App\Models\Category::all();
         return view('admin.product.edit_product', compact('product', 'categories'));
     }
 
-    public function update(Request $request, string $id)
+    public function update(Request $request, int $id)
     {
         $validated = $request->validate([
             'category_id' => 'required|exists:categories,id',
@@ -76,7 +76,7 @@ class ProductController extends Controller
             $file = $request->file('image');
             $filename = Str::slug($validated['name']) . '-' . time() . '.' . $file->getClientOriginalExtension();
             $file->storeAs('public/products', $filename);
-            $validated['image'] = 'products/' . $filename; // Simpan path lengkap
+            $validated['image'] = 'products/' . $filename;
         }
 
         $product->update($validated);
@@ -84,7 +84,7 @@ class ProductController extends Controller
         return redirect()->route('admin.products.index')->with('success', 'Produk berhasil diupdate');
     }
 
-    public function destroy(string $id)
+    public function destroy(int $id)
     {
         $product = Product::findOrFail($id);
 

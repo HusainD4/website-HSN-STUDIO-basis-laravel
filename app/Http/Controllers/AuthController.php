@@ -28,16 +28,19 @@ class AuthController extends Controller
             'password' => ['required'],
         ]);
 
-        // Cek kredensial
-        if (Auth::attempt($credentials, $request->remember)) {
-            $request->session()->regenerate();
+        $remember = $request->has('remember');
 
+        // Cek kredensial
+        if (Auth::attempt($credentials, $remember)) {
+            $request->session()->regenerate();
             // Arahkan user ke halaman utama (homepage)
             return redirect()->intended('/');
         }
 
         // Jika gagal
-        return back()->with('error', 'Email atau password salah');
+        return back()->withErrors([
+            'email' => 'Email atau password salah.',
+        ])->onlyInput('email');
     }
 
     /**
@@ -57,7 +60,7 @@ class AuthController extends Controller
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email'],
-            'password' => ['required', 'confirmed', 'min:6'],
+            'password' => ['required', 'confirmed', 'min:8'],
         ]);
 
         // Simpan user
@@ -71,7 +74,7 @@ class AuthController extends Controller
         Auth::login($user);
 
         // Redirect ke homepage
-        return redirect('/');
+        return redirect('/')->with('success', 'Registrasi berhasil! Selamat datang.');
     }
 
     /**

@@ -15,7 +15,11 @@ class CategoryController extends Controller
         $categories = Category::all();
         $products = \App\Models\Product::latest()->take(6)->get(); // Produk terbaru
 
-        return view('hsnstudio.category.category', compact('categories', 'products'));
+        return view('hsnstudio.category.category', [
+            'categories' => $categories,
+            'products'   => $products,
+            'selectedCategory' => null,
+        ]);
     }
 
     /**
@@ -27,6 +31,10 @@ class CategoryController extends Controller
         $category = Category::where('slug', $slug)->firstOrFail();
         $products = $category->products()->latest()->get();
 
-        return view('hsnstudio.category.category', compact('categories', 'products'));
+        return view('hsnstudio.category.category', [
+            'categories' => $categories,
+            'products'   => $products,
+            'selectedCategory' => $category,
+        ]);
     }
 }

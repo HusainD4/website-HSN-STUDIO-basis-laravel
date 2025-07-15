@@ -15,16 +15,13 @@ class VerifyEmailController extends Controller
     public function __invoke(EmailVerificationRequest $request): RedirectResponse
     {
         if ($request->user()->hasVerifiedEmail()) {
-            return redirect()->intended(route('dashboard', absolute: false).'?verified=1');
+            return redirect()->route('dashboard')->with('status', 'Email sudah diverifikasi.');
         }
 
         if ($request->user()->markEmailAsVerified()) {
-            /** @var \Illuminate\Contracts\Auth\MustVerifyEmail $user */
-            $user = $request->user();
-
-            event(new Verified($user));
+            event(new Verified($request->user()));
         }
 
-        return redirect()->intended(route('dashboard', absolute: false).'?verified=1');
+        return redirect()->route('dashboard')->with('verified', 1);
     }
 }

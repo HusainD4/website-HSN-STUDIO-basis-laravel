@@ -12,7 +12,7 @@ class ProductController extends Controller
     // Tampil produk front-end
     public function showProducts()
     {
-        $products = Product::with('category')->get();
+        $products = Product::with('category')->latest()->get();
         return view('hsnstudio.product.product', compact('products'));
     }
 
@@ -26,7 +26,7 @@ class ProductController extends Controller
     // Tampil halaman list produk admin
     public function index()
     {
-        $products = Product::with('category')->get();
+        $products = Product::with('category')->latest()->get();
         return view('admin.product.admin_product', compact('products'));
     }
 
