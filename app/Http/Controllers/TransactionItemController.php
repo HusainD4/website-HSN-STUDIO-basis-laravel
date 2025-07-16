@@ -15,31 +15,44 @@ class TransactionItemController extends Controller
      * @param \App\Models\TransactionItem $transactionItem
      * @return \Illuminate\Http\JsonResponse
      */
+    // public function updateAction(Request $request, TransactionItem $transactionItem)
+    // {
+    //     // Validasi input
+    //     $validated = $request->validate([
+    //         'action' => ['required', 'in:pending,cancel,dikirim,sukses'],
+    //     ]);
+
+    //     try {
+    //         $transactionItem->action = $validated['action'];
+    //         $transactionItem->save();
+
+    //         return response()->json([
+    //             'success' => true,
+    //             'message' => 'Status berhasil diperbarui.',
+    //             'data' => [
+    //                 'id' => $transactionItem->id,
+    //                 'action' => $transactionItem->action,
+    //             ],
+    //         ]);
+    //     } catch (\Exception $e) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => 'Terjadi kesalahan saat memperbarui status.',
+    //             'error' => $e->getMessage(),
+    //         ], 500);
+    //     }
+    // }
+
     public function updateAction(Request $request, TransactionItem $transactionItem)
     {
-        // Validasi input
-        $validated = $request->validate([
-            'action' => ['required', 'in:pending,cancel,dikirim,sukses'],
+        $request->validate([
+            'action' => 'required|in:pending,cancel,dikirim,sukses',
         ]);
 
-        try {
-            $transactionItem->action = $validated['action'];
-            $transactionItem->save();
+        $transactionItem->action = $request->input('action');
+        $transactionItem->save();
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Status berhasil diperbarui.',
-                'data' => [
-                    'id' => $transactionItem->id,
-                    'action' => $transactionItem->action,
-                ],
-            ]);
-        } catch (\Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Terjadi kesalahan saat memperbarui status.',
-                'error' => $e->getMessage(),
-            ], 500);
-        }
+        return response()->json(['message' => 'Status berhasil diperbarui']);
     }
+
 }

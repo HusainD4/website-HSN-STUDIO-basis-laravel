@@ -3,6 +3,116 @@
 @section('title', 'Keranjang Belanja')
 
 @section('content')
+<style>
+    body {
+        background: linear-gradient(135deg, #fceff9 0%, #fff 50%, #d0f4ff 100%);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .container h2 {
+        color: #db2777;
+        font-weight: 800;
+        text-shadow: 1px 1px 0 #ffd6e8;
+    }
+
+    table.table {
+        background-color: #fff;
+        border-radius: 0.75rem;
+        overflow: hidden;
+        box-shadow: 0 8px 20px rgba(219, 39, 119, 0.08);
+    }
+
+    thead {
+        background-color: #ffe0f0;
+        color: #d6336c;
+    }
+
+    tbody td {
+        vertical-align: middle;
+    }
+
+    .btn-danger,
+    .btn-warning,
+    .btn-success,
+    .btn-primary {
+        border-radius: 0.5rem;
+        font-weight: 600;
+        transition: all 0.2s ease-in-out;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    }
+
+    .btn-danger:hover {
+        background-color: #c92a2a;
+    }
+
+    .btn-warning {
+        background-color: #ffe066;
+        color: #5c3d00;
+        border: none;
+    }
+
+    .btn-warning:hover {
+        background-color: #ffd43b;
+    }
+
+    .btn-success {
+        background-color: #b2f2bb;
+        color: #2f9e44;
+        border: none;
+    }
+
+    .btn-success:hover {
+        background-color: #69db7c;
+    }
+
+    .btn-primary {
+        background-color: #a5d8ff;
+        color: #1c1c1c;
+        border: 1px solid #74c0fc;
+    }
+
+    .btn-primary:hover {
+        background-color: #74c0fc;
+        color: #000;
+    }
+
+    .modal-header {
+        background: #ffe0f0;
+        color: #d6336c;
+        border-bottom: none;
+    }
+
+    .modal-title {
+        font-weight: bold;
+    }
+
+    .modal-content {
+        border-radius: 1rem;
+        border: 2px solid #f3d9ec;
+        box-shadow: 0 10px 25px rgba(219, 39, 119, 0.2);
+    }
+
+    .modal-body label {
+        font-weight: 600;
+        color: #495057;
+    }
+
+    .form-control {
+        border-radius: 0.5rem;
+        border: 1px solid #dee2e6;
+    }
+
+    .form-control:focus {
+        border-color: #db2777;
+        box-shadow: 0 0 0 0.2rem rgba(219, 39, 119, 0.25);
+    }
+    .action-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+</style>
 <div class="container py-5">
     <h2 class="mb-4">Keranjang Belanja</h2>
 
@@ -42,6 +152,7 @@
             </tbody>
         </table>
 
+        <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#checkoutModal">Checkout</button>
         <form action="{{ route('cart.clear') }}" method="POST">
             @csrf
             <button class="btn btn-warning">Kosongkan Keranjang</button>
@@ -52,7 +163,6 @@
 </div>
 
 <!-- Tombol Checkout -->
-<button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#checkoutModal">Checkout</button>
 
 <!-- Modal Checkout -->
 <div class="modal fade" id="checkoutModal" tabindex="-1" aria-labelledby="checkoutModalLabel" aria-hidden="true">

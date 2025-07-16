@@ -1,87 +1,333 @@
 <x-layouts.app :title="'Detail Transaksi'">
     <style>
-        body {
-            background: linear-gradient(to bottom right, #a5d8ff, #ffffff, #ffc8dd);
-        }
+body {
+    background: linear-gradient(135deg, #a5d8ff 0%, #ffffff 50%, #ffc8dd 100%);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+}
 
-        .box-shadow-pastel {
-            box-shadow: 0 8px 24px rgba(165, 216, 255, 0.3), 0 4px 12px rgba(255, 200, 221, 0.2);
-        }
+.max-w-5xl {
+    max-width: 180rem; /* 1280px */
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1.5rem;  /* px-6 */
+    padding-right: 1.5rem;
+    padding-top: 2.5rem; /* py-10 */
+    padding-bottom: 2.5rem;
+}
 
-        .select-pastel {
-            background-color: #fff0f6;
-            border-color: #ffc8dd;
-            color: #d6336c;
-            font-weight: 600;
-            padding: 0.4rem 0.75rem;
-        }
+.text-center {
+    text-align: center;
+    margin-bottom: 2.5rem; /* mb-10 */
+}
 
-        .btn-update {
-            background-color: #ffc8dd;
-            color: #72163c;
-            font-weight: 600;
-            cursor: pointer;
-            border: 1px solid #ffc8dd;
-            transition: background-color 0.3s, color 0.3s;
-        }
+h1.text-4xl {
+    font-size: 2.25rem; /* text-4xl */
+    font-weight: 800;
+    color: #d6336c; /* text-pink-600 */
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    margin-bottom: 0.5rem;
+}
 
-        .btn-update:hover {
-            background-color: #faa2c1;
-            color: #500724;
-        }
+p.text-lg {
+    font-size: 1.125rem;
+    color: #1864ab; /* text-blue-700 */
+}
 
-        .btn-update:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
+.box-shadow-pastel {
+    box-shadow:
+        0 8px 24px rgba(165, 216, 255, 0.3),
+        0 4px 12px rgba(255, 200, 221, 0.2);
+    border-radius: 0.75rem;
+    background-color: white;
+    border: 1px solid transparent;
+}
 
-        .badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            border-radius: 9999px;
-            font-size: 0.875rem;
-            font-weight: 600;
-        }
+.bg-white {
+    background-color: white;
+}
 
-        .badge-success {
-            background-color: #d3f9d8;
-            color: #2f9e44;
-        }
+.border-pink-300 {
+    border-color: #ffa3b1;
+}
 
-        .badge-pending {
-            background-color: #ffe066;
-            color: #7c5b00;
-        }
+.border-blue-300 {
+    border-color: #7ea8f7;
+}
 
-        .badge-cancel {
-            background-color: #ffa8a8;
-            color: #8b0000;
-        }
+.rounded-xl {
+    border-radius: 1rem;
+}
 
-        .badge-dikirim {
-            background-color: #a5d8ff;
-            color: #0b5394;
-        }
+.p-6 {
+    padding: 1.5rem;
+}
+
+.mb-4 {
+    margin-bottom: 1rem;
+}
+
+.text-2xl {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.font-bold {
+    font-weight: 700;
+}
+
+.text-pink-600 {
+    color: #d6336c;
+}
+
+.border-b {
+    border-bottom-width: 1px;
+}
+
+.border-pink-200 {
+    border-color: #ffc8dd;
+}
+
+.border-blue-200 {
+    border-color: #bbd7ff;
+}
+
+.text-blue-700 {
+    color: #1864ab;
+}
+
+.text-gray-700 {
+    color: #374151;
+}
+
+.space-y-4 > * + * {
+    margin-top: 1rem;
+}
+
+.grid {
+    display: grid;
+    gap: 2rem;
+}
+
+.grid-cols-1 {
+    grid-template-columns: 1fr;
+}
+
+.lg\:grid-cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.lg\:col-span-1 {
+    grid-column: span 1 / span 1;
+}
+
+.lg\:col-span-2 {
+    grid-column: span 2 / span 2;
+}
+
+.overflow-x-auto {
+    overflow-x: auto;
+}
+
+.min-w-full {
+    min-width: 100%;
+}
+
+.table thead tr {
+    background-color: #e6f0ff; /* light blue */
+    color: #1864ab;
+    font-weight: 700;
+}
+
+.table tbody tr:not(:last-child) {
+    border-bottom: 1px solid #bbd7ff;
+}
+
+.px-6 {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+.py-3 {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+}
+
+.py-4 {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+}
+
+.font-semibold {
+    font-weight: 600;
+}
+
+.text-pink-500 {
+    color: #e64980;
+}
+
+.text-base {
+    font-size: 1rem;
+}
+
+.text-sm {
+    font-size: 0.875rem;
+}
+
+.mb-6 {
+    margin-bottom: 1.5rem;
+}
+
+.flex {
+    display: flex;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.gap-4 {
+    gap: 1rem;
+}
+
+.w-48 {
+    width: 12rem;
+}
+
+.select-pastel {
+    background-color: #fff0f6;
+    border: 1.5px solid #ffc8dd;
+    color: #d6336c;
+    font-weight: 600;
+    padding: 0.4rem 0.75rem;
+    border-radius: 0.75rem;
+    cursor: pointer;
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.select-pastel:hover,
+.select-pastel:focus {
+    box-shadow: 0 0 8px rgba(214, 51, 108, 0.6);
+    border-color: #d6336c;
+    outline: none;
+}
+
+.btn-pastel {
+    background-color: #a5d8ff;
+    color: #1c1c1c;
+    border: 1px solid #91a7ff;
+    padding: 0.5rem 1.25rem;
+    border-radius: 0.5rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    box-shadow: 0 2px 6px rgba(165, 216, 255, 0.6);
+}
+
+.btn-pastel:hover,
+.btn-pastel:focus {
+    background-color: #ffc8dd;
+    color: #000000;
+    outline: none;
+    box-shadow: 0 2px 12px rgba(255, 200, 221, 0.8);
+}
+
+#success-alert {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 10000;
+    background-color: #d3f9d8;
+    border-left: 5px solid #2f9e44;
+    color: #2f9e44;
+    padding: 1rem 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 3px 12px rgba(47, 158, 68, 0.45);
+    font-weight: 600;
+    display: none;
+    max-width: 280px;
+    font-size: 1rem;
+    user-select: none;
+    animation: fadeInOut 3s forwards;
+}
+
+@keyframes fadeInOut {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    10% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    90% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+/* Tambahan margin agar tidak berdempetan */
+h3 {
+    margin-bottom: 1.25rem; /* untuk jarak bawah judul */
+}
+
+table td, table th {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+}
+
+tbody tr:hover {
+    background-color: #fef2f7;
+}
+
+/* Container grid spacing sudah cukup, tapi kita kasih padding tambahan ke item */
+.lg\:col-span-1, .lg\:col-span-2 {
+    padding: 1rem;
+}
+
+/* Tombol kembali */
+.text-center.mt-10 {
+    margin-top: 2.5rem;
+}
+
+a.inline-flex {
+    display: inline-flex;
+    align-items: center;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    border-width: 2px;
+    border-radius: 9999px;
+    font-size: 1.125rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+a.inline-flex:hover {
+    transform: scale(1.05);
+}
+
     </style>
 
     <div class="max-w-5xl mx-auto py-10 px-6">
-
-        {{-- Header --}}
         <div class="text-center mb-10">
             <h1 class="text-4xl font-extrabold text-pink-600 drop-shadow-sm mb-2">💌 Detail Pesananmu 💌</h1>
             <p class="text-lg text-blue-700">ID Transaksi: #{{ $transaction->id }}</p>
         </div>
 
-        {{-- Alert sukses --}}
-        <div id="success-alert" class="hidden bg-green-100 border-l-4 border-green-400 text-green-800 p-4 rounded-lg mb-6" role="alert">
-            <p class="font-bold">Yeay! ✅</p>
-            <p id="success-message">Status pesanan berhasil diupdate!</p>
-        </div>
+        <div id="success-alert" role="alert">Status pesanan berhasil diupdate!</div>
 
-        {{-- Grid utama --}}
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-
-            {{-- Info Pembeli --}}
             <div class="lg:col-span-1 bg-white rounded-xl border border-pink-300 p-6 box-shadow-pastel">
                 <h3 class="text-2xl font-bold text-pink-600 border-b border-pink-200 pb-3 mb-4">🧾 Info Pembeli</h3>
                 <div class="space-y-4 text-base text-gray-700">
@@ -93,60 +339,58 @@
                 </div>
             </div>
 
-            {{-- Barang Pesanan --}}
             <div class="lg:col-span-2 bg-white rounded-xl border border-blue-300 box-shadow-pastel">
-                <h3 class="text-2xl font-bold text-blue-700 border-b border-blue-200 p-6">📦 Barang Pesanan</h3>
+                <h3 class="text-2xl font-bold text-blue-700 border-b border-blue-200 p-6 ">📦 Barang Pesanan</h3>
+
                 @if($transaction->items->count() > 0)
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full">
-                            <thead class="bg-blue-50 text-blue-700 text-left text-sm font-bold">
-                                <tr>
-                                    <th class="px-6 py-3">Produk</th>
-                                    <th class="px-6 py-3">Status</th>
-                                    <th class="px-6 py-3">Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody class="divide-y divide-blue-100 text-gray-700">
-                                @foreach($transaction->items as $item)
-                                    <tr id="item-row-{{ $item->id }}">
-                                        <td class="px-6 py-4">
-                                            <div class="text-pink-600 font-bold text-lg">{{ $item->product_name }}</div>
-                                            <div class="text-sm">{{ $item->quantity }} × Rp {{ number_format($item->price, 0, ',', '.') }}</div>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <select id="action-select-{{ $item->id }}" class="w-full rounded-xl border shadow select-pastel" aria-label="Pilih status produk">
-                                                @foreach(['pending', 'cancel', 'dikirim', 'sukses'] as $status)
-                                                    <option value="{{ $status }}" @if($item->action === $status) selected @endif>
-                                                        {{ ucfirst($status) }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                        </td>
-                                        <td class="px-6 py-4">
-                                            <button
-                                                data-id="{{ $item->id }}"
-                                                class="update-button btn-update px-5 py-2 rounded-full border border-pink-300 hover:shadow-lg transition"
-                                                type="button"
-                                            >
-                                                Update
-                                            </button>
-                                        </td>
-                                    </tr>
+                    <form id="update-status-form" class="px-6 pb-6">
+                        <div class="mb-6 flex items-center gap-4">
+                            <label for="bulk-status" class="font-semibold text-blue-700 ">Status Pesanan:</label>
+                            <select id="bulk-status" name="bulk_status" class="select-pastel w-48" aria-label="Ubah status semua produk">
+                                @foreach(['pending', 'cancel', 'dikirim', 'sukses'] as $status)
+                                    <option value="{{ $status }}">{{ ucfirst($status) }}</option>
                                 @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="px-6 py-4 bg-blue-50 border-t-2 border-blue-200 flex justify-end items-center">
-                        <span class="text-base font-semibold text-blue-800 mr-3">Total:</span>
-                        <span class="text-2xl font-bold text-pink-600">Rp {{ number_format($transaction->total, 0, ',', '.') }}</span>
-                    </div>
+                            </select>
+                            <button type="submit" class="btn-pastel">Update</button>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full">
+                                <thead class="bg-blue-50 text-blue-700 text-left text-sm font-bold">
+                                    <tr>
+                                        <th class="px-6 py-3">Produk</th>
+                                        <!-- <th class="px-6 py-3">Status Saat Ini</th> -->
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-blue-100 text-gray-700">
+                                    @foreach($transaction->items as $item)
+                                        <tr>
+                                            <td class="px-6 py-4">
+                                                <div class="text-pink-600 font-bold text-lg">{{ $item->product_name }}</div>
+                                                <div class="text-sm">{{ $item->quantity }} × Rp {{ number_format($item->price, 0, ',', '.') }}</div>
+                                            </td>
+                                            <!-- <td class="px-6 py-4">
+                                                <span class="inline-block w-full select-pastel bg-gray-100 text-gray-600 cursor-default rounded px-3 py-2">
+                                                    {{ ucfirst($item->action) }}
+                                                </span>
+                                            </td> -->
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="mt-4 flex justify-end items-center bg-blue-50 border-t-2 border-blue-200 px-6 py-4">
+                            <span class="text-base font-semibold text-blue-800 mr-3">Total:</span>
+                            <span class="text-2xl font-bold text-pink-600">Rp {{ number_format($transaction->total, 0, ',', '.') }}</span>
+                        </div>
+                    </form>
                 @else
                     <p class="p-6 text-center text-gray-500">Belum ada produk di pesanan ini 😢</p>
                 @endif
             </div>
         </div>
 
-        {{-- Tombol Kembali --}}
         <div class="text-center mt-10">
             <a href="{{ route('admin.transactions.index') }}"
                 class="inline-flex items-center px-6 py-3 border-2 border-pink-300 bg-[#a5d8ff] text-pink-800 rounded-full text-lg font-bold shadow-sm hover:bg-[#ffc8dd] hover:text-pink-900 transition-all duration-300 hover:scale-105"
@@ -156,51 +400,48 @@
         </div>
     </div>
 
-    @push('scripts')
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                document.querySelectorAll('.update-button').forEach(button => {
-                    button.addEventListener('click', function () {
-                        const itemId = this.dataset.id;
-                        const select = document.getElementById(`action-select-${itemId}`);
-                        const newAction = select.value;
-                        const originalText = this.innerHTML;
-                        const button = this;
+    <script>
+        document.getElementById('update-status-form').addEventListener('submit', function(e) {
+            e.preventDefault();
 
-                        button.disabled = true;
-                        button.innerHTML = `<svg class="animate-spin h-5 w-5 mx-auto text-pink-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"></path>
-                        </svg>`;
+            const form = e.target;
+            const bulkStatus = form.bulk_status.value;
+            const btnSubmit = form.querySelector('button[type="submit"]');
+            btnSubmit.disabled = true;
 
-                        fetch(`/admin/transaction-items/${itemId}/action`, {
-                            method: 'PATCH',
-                            headers: {
-                                'Content-Type': 'application/json',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            },
-                            body: JSON.stringify({ action: newAction })
-                        })
-                        .then(response => {
-                            if (!response.ok) {
-                                return response.json().then(err => { throw new Error(err.message || 'Terjadi kesalahan.'); });
-                            }
-                            return response.json();
-                        })
-                        .then(data => {
-                            const alertBox = document.getElementById('success-alert');
-                            document.getElementById('success-message').textContent = data.message || 'Status pesanan berhasil diupdate!';
-                            alertBox.classList.remove('hidden');
-                            setTimeout(() => alertBox.classList.add('hidden'), 3000);
-                        })
-                        .catch(err => alert(err.message))
-                        .finally(() => {
-                            button.disabled = false;
-                            button.innerHTML = originalText;
-                        });
-                    });
+            fetch("{{ route('admin.transactionitems.updateMultiple') }}", {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    transaction_id: {{ $transaction->id }},
+                    status: bulkStatus
+                })
+            })
+            .then(res => {
+                if (!res.ok) return res.json().then(err => Promise.reject(err.message || 'Terjadi kesalahan'));
+                return res.json();
+            })
+            .then(data => {
+                const alertBox = document.getElementById('success-alert');
+                alertBox.textContent = data.message || 'Status pesanan berhasil diupdate!';
+                alertBox.style.display = 'block';
+                setTimeout(() => alertBox.style.display = 'none', 3000);
+
+                // Update tampilan status di tabel sesuai pilihan baru
+                const statusSpans = form.querySelectorAll('tbody span');
+                statusSpans.forEach(span => {
+                    span.textContent = bulkStatus.charAt(0).toUpperCase() + bulkStatus.slice(1);
                 });
+            })
+            .catch(err => {
+                alert(err);
+            })
+            .finally(() => {
+                btnSubmit.disabled = false;
             });
-        </script>
-    @endpush
+        });
+    </script>
 </x-layouts.app>

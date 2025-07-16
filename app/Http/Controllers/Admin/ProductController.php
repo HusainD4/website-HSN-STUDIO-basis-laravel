@@ -13,6 +13,7 @@ class ProductController extends Controller
 {
     public function index()
     {
+        
         // Paginate supaya gak load semua produk sekaligus
         $products = Product::with('category')->latest()->paginate(10);
         return view('admin.product.admin_product', compact('products'));
@@ -95,4 +96,13 @@ class ProductController extends Controller
 
         return redirect()->route('admin.products.index')->with('success', 'Produk berhasil dihapus');
     }
+       // Method toggle on/off status
+    public function toggle(Product $product)
+    {
+        $product->is_active = !$product->is_active;
+        $product->save();
+
+        return back()->with('success', 'Status produk berhasil diperbarui.');
+    }
+
 }

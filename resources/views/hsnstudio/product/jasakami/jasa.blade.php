@@ -11,7 +11,7 @@
             @forelse($services as $service)
                 <div class="col-md-4 mb-4">
                     <div class="card h-100 shadow-sm">
-                        <img src="{{ $service->image_url ?? '/images/default-service.jpg' }}" class="card-img-top" alt="{{ $service->name }}">
+                        <img src="{{ asset('storage/' . $service->image_url) }}" class="card-img-top" alt="{{ $service->name }}">
                         <div class="card-body">
                             <h5 class="card-title">{{ $service->name }}</h5>
                             <p class="card-text">{{ Str::limit($service->description, 100) }}</p>

@@ -27,6 +27,8 @@ use App\Http\Controllers\Admin\FeedbackController as AdminFeedbackController;
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\ServicesController as AdminServicesController;
 use App\Http\Controllers\Admin\TransactionController as AdminTransactionController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\TransactionItemController;
 
 /*
 |--------------------------------------------------------------------------
@@ -114,8 +116,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // Login dan Register Pengguna Biasa
 Route::get('/hsnstudio/login', [UserLoginController::class, 'showLoginForm'])->name('user.login');
 Route::post('/hsnstudio/login', [UserLoginController::class, 'login'])->name('user.login.post');
+// Menampilkan form register
 Route::get('/hsnstudio/register', [UserRegisterController::class, 'showRegistrationForm'])->name('user.register');
+
+// Menangani form POST dari register
 Route::post('/hsnstudio/register', [UserRegisterController::class, 'register'])->name('user.register.post');
+
 
 // Logout (hanya untuk user yang sudah login)
 Route::post('/hsnstudio/logout', [UserLoginController::class, 'logout'])->middleware('auth')->name('user.logout');
@@ -147,6 +153,7 @@ Route::middleware(['auth', 'is.admin'])->prefix('admin')->name('admin.')->group(
 
     // Manajemen Produk
     Route::resource('products', AdminProductController::class);
+    Route::patch('products/{product}/toggle', [ProductController::class, 'toggle'])->name('products.toggle');
 
     // Manajemen Jasa / Services
     Route::resource('services', AdminServicesController::class);
@@ -159,7 +166,11 @@ Route::middleware(['auth', 'is.admin'])->prefix('admin')->name('admin.')->group(
     Route::get('transactions/{transaction}', [AdminTransactionController::class, 'show'])->name('transactions.show');
     Route::post('transactions/{transaction}/update-status', [AdminTransactionController::class, 'updateStatus'])->name('transactions.updateStatus');
     // Route::patch('/transaction-items/{item}/action', [AdminTransactionController::class, 'updateAction'])->name('admin.transaction-items.updateAction');
-    Route::patch('/admin/transactionitem/{transactionItem}/action', [TransactionItemController::class, 'updateAction']);
+    // Route::patch('transactionitems/{transactionItem}/action', [TransactionItemController::class, 'updateAction'])
+    //     ->name('transactionitems.updateAction');
+    Route::patch('transactionitems/update-multiple', [TransactionItemController::class, 'updateMultiple'])->name('transactionitems.updateMultiple');
+
+
 });
 
 /*

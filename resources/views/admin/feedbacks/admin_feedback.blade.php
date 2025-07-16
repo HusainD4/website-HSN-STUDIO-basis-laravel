@@ -1,143 +1,157 @@
 <x-layouts.app :title="'Kritik & Saran'">
-    <style>
-        body {
-            background: linear-gradient(135deg, #cce5ff, #ffffff, #ffe0f0);
-            font-family: 'Segoe UI', 'Comic Sans MS', cursive, sans-serif;
-        }
+  <style>
+    body {
+      background: linear-gradient(135deg, #a5d8ff, #ffffff, #ffc8dd);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+    }
 
-        .feedback-container {
-            max-width: 1100px;
-            margin: 2rem auto;
-            padding: 2rem;
-            background-color: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(236, 72, 153, 0.1);
-            border: 2px solid #fbcfe8;
-        }
+    .feedback-container {
+      max-width: 80rem;
+      margin: 3rem auto;
+      background: #fff;
+      padding: 2rem 2.5rem;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+    }
 
-        h1 {
-            font-size: 2rem;
-            font-weight: 800;
-            color: #ec4899;
-            text-align: center;
-            margin-bottom: 1.5rem;
-        }
+    .feedback-container h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #3b0764;
+      margin-bottom: 1.5rem;
+    }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+    .success-alert {
+      background-color: #dcfce7;
+      color: #15803d;
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-weight: 500;
+    }
 
-        th {
-            background-color: #f0f9ff;
-            color: #1e40af;
-            text-align: left;
-            padding: 12px;
-            font-size: 0.95rem;
-        }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
 
-        td {
-            padding: 12px;
-            border-top: 1px solid #e5e7eb;
-            font-size: 0.95rem;
-            color: #374151;
-        }
+    th {
+      background-color: #f0f4f8;
+      color: #334155;
+      padding: 12px;
+      text-align: left;
+      text-transform: uppercase;
+      font-size: 0.85rem;
+    }
 
-        tr:hover {
-            background-color: #fdf2f8;
-        }
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #e2e8f0;
+      color: #475569;
+      vertical-align: top;
+    }
 
-        .success-alert {
-            background-color: #d1fae5;
-            color: #065f46;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border-radius: 12px;
-            font-weight: 600;
-        }
+    .btn-link {
+      background-color: #e0f2fe;
+      color: #0284c7;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      margin-right: 8px;
+      transition: 0.2s ease;
+    }
 
-        .btn-link {
-            color: #3b82f6;
-            font-weight: 600;
-            text-decoration: none;
-        }
+    .btn-link:hover {
+      background-color: #bae6fd;
+    }
 
-        .btn-link:hover {
-            text-decoration: underline;
-        }
+    .btn-delete {
+      background-color: #fee2e2;
+      color: #dc2626;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
 
-        .btn-delete {
-            color: #ef4444;
-            font-weight: 600;
-            background: none;
-            border: none;
-            cursor: pointer;
-        }
+    .btn-delete:hover {
+      background-color: #fecaca;
+    }
 
-        .btn-delete:hover {
-            text-decoration: underline;
-        }
+    .inline {
+      display: inline;
+    }
 
-        .no-feedback {
-            text-align: center;
-            color: #6b7280;
-            padding: 1rem;
-        }
+    .text-center {
+      text-align: center;
+    }
 
-        .pagination {
-            margin-top: 1.5rem;
-        }
-    </style>
+    .no-feedback {
+      text-align: center;
+      margin-top: 2rem;
+      color: #6b7280;
+      font-style: italic;
+    }
 
-    <div class="feedback-container">
-        <h1>📬 Kritik Dan Saran</h1>
+    .pagination {
+      margin-top: 1.5rem;
+    }
+  </style>
 
-        @if(session('success'))
-            <div class="success-alert">
-                {{ session('success') }}
-            </div>
-        @endif
+  <div class="feedback-container">
+    <h1>📬 Kritik & Saran</h1>
 
-        @if($feedbacks->count())
-            <table>
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Nama</th>
-                        <th>Email</th>
-                        <th>Pesan</th>
-                        <th>Tanggal</th>
-                        <th class="text-center">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach($feedbacks as $feedback)
-                        <tr>
-                            <td>{{ $feedback->id }}</td>
-                            <td>{{ $feedback->name }}</td>
-                            <td>{{ $feedback->email }}</td>
-                            <td title="{{ $feedback->message }}">{{ \Illuminate\Support\Str::limit($feedback->message, 50) }}</td>
-                            <td>{{ $feedback->created_at->format('d M Y') }}</td>
-                            <td class="text-center">
-                                <a href="{{ route('kritiksaran.show', $feedback->id) }}" class="btn-link">Lihat</a>
+    @if(session('success'))
+      <div class="success-alert">
+        {{ session('success') }}
+      </div>
+    @endif
 
-                                <form action="{{ route('kritiksaran.destroy', $feedback->id) }}" method="POST" class="inline"
-                                      onsubmit="return confirm('Yakin ingin menghapus feedback ini?');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn-delete">Hapus</button>
-                                </form>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+    @if($feedbacks->count())
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nama</th>
+            <th>Email</th>
+            <th>Pesan</th>
+            <th>Tanggal</th>
+            <th class="text-center">Aksi</th>
+          </tr>
+        </thead>
+        <tbody>
+          @foreach($feedbacks as $feedback)
+            <tr>
+              <td>{{ $feedback->id }}</td>
+              <td>{{ $feedback->name }}</td>
+              <td>{{ $feedback->email }}</td>
+              <td title="{{ $feedback->message }}">{{ \Illuminate\Support\Str::limit($feedback->message, 50) }}</td>
+              <td>{{ $feedback->created_at->format('d M Y') }}</td>
+              <td class="text-center">
+                <a href="{{ route('kritiksaran.show', $feedback->id) }}" class="btn-link">Lihat</a>
+                <form action="{{ route('kritiksaran.destroy', $feedback->id) }}" method="POST" class="inline" onsubmit="return confirm('Yakin ingin menghapus feedback ini?');">
+                  @csrf
+                  @method('DELETE')
+                  <button type="submit" class="btn-delete">Hapus</button>
+                </form>
+              </td>
+            </tr>
+          @endforeach
+        </tbody>
+      </table>
 
-            <div class="pagination">
-                {{ $feedbacks->links() }}
-            </div>
-        @else
-            <p class="no-feedback">Belum ada feedback yang masuk.</p>
-        @endif
-    </div>
+      <div class="pagination">
+        {{ $feedbacks->links() }}
+      </div>
+    @else
+      <p class="no-feedback">Belum ada feedback yang masuk.</p>
+    @endif
+  </div>
 </x-layouts.app>

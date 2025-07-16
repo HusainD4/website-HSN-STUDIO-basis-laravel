@@ -12,6 +12,9 @@
     </section>
 
     <section class="section text-center" id="tentang">
+        <div class="text-center my-4">
+            <img src="{{ asset('images/LogoHsnStudio.png') }}" alt="Logo HSN Studio" style="max-width: 200px;">
+        </div>
         <div class="container">
             <h2 class="mb-4">Tentang Kami</h2>
             <p class="lead">HSN Studio adalah studio kreatif yang menyediakan layanan desain grafis, pengembangan web, dan produksi konten digital.</p>

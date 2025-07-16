@@ -35,18 +35,10 @@
                                             Rp {{ number_format($product->price, 0, ',', '.') }}
                                         </p>
 
-                                        {{-- Tombol Beli Sekarang --}}
                                         <a href="{{ route('produk.show', $product->id) }}"
                                            class="btn btn-primary btn-sm mt-2">
                                             Beli Sekarang
                                         </a>
-                                        {{-- atau arahkan ke WhatsApp:
-                                        <a href="https://wa.me/62XXXXXXXXX?text=Halo%20saya%20ingin%20membeli%20{{ urlencode($product->name) }}"
-                                           target="_blank"
-                                           class="btn btn-success btn-sm mt-2">
-                                            Beli via WhatsApp
-                                        </a>
-                                        --}}
                                     </div>
                                 </div>
                             </div>

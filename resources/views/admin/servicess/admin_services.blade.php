@@ -1,181 +1,173 @@
-<x-layouts.app :title="'services'">
-    <style>
-        body {
-            background-color: #fdf6f9;
-        }
-        
-        .service-container {
-            background-color: #ffffff;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 25px rgba(255, 182, 193, 0.3);
-            font-family: 'Segoe UI', sans-serif;
-        }
+<x-layouts.app :title="'Manajemen Jasa'">
+  <style>
+    body {
+      background: linear-gradient(135deg, #a5d8ff, #ffffff, #ffc8dd);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+    }
 
-        .service-title {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #ff69b4;
-            margin-bottom: 20px;
-            text-align: center;
-        }
+    .soft-container {
+      background: white;
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+      padding: 32px;
+      margin-top: 40px;
+    }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
+    .soft-container h2 {
+      font-size: 1.5rem;
+      color: #3b0764;
+      margin-bottom: 20px;
+    }
 
-        thead {
-            background-color: #ffe4ec;
-        }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 16px;
+    }
 
-        th, td {
-            padding: 12px 16px;
-            text-align: left;
-            border-bottom: 1px solid #f0cde3;
-            vertical-align: middle;
-        }
+    th {
+      background-color: #f0f4f8;
+      color: #334155;
+      padding: 12px;
+      text-align: left;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+    }
 
-        th {
-            font-size: 0.85rem;
-            color: #ff4d94;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-        }
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #e2e8f0;
+      color: #475569;
+      vertical-align: middle;
+    }
 
-        td {
-            color: #333;
-            font-size: 0.95rem;
-        }
+    .btn-create {
+      background: linear-gradient(to right, #60a5fa, #f472b6);
+      color: white;
+      padding: 10px 16px;
+      font-weight: 600;
+      border-radius: 8px;
+      text-decoration: none;
+      transition: 0.2s ease-in-out;
+    }
 
-        /* Styling gambar kecil */
-        .service-image {
-            width: 60px;
-            height: 60px;
-            object-fit: cover;
-            border-radius: 8px;
-            margin-right: 12px;
-        }
+    .btn-create:hover {
+      opacity: 0.9;
+    }
 
-        .service-info {
-            display: flex;
-            align-items: center;
-        }
+    .btn-action {
+      display: inline-block;
+      padding: 6px 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: 8px;
+      transition: 0.2s ease-in-out;
+      text-decoration: none;
+    }
 
-        .service-description {
-            font-size: 0.85rem;
-            color: #666;
-            margin-top: 4px;
-        }
+    .btn-edit {
+      background-color: #dbeafe;
+      color: #2563eb;
+    }
 
-        .create-btn {
-            background-color: #ff69b4;
-            color: white;
-            padding: 10px 18px;
-            border-radius: 12px;
-            font-weight: 600;
-            transition: 0.2s ease;
-            text-decoration: none;
-        }
+    .btn-edit:hover {
+      background-color: #bfdbfe;
+    }
 
-        .create-btn:hover {
-            background-color: #e85a9e;
-        }
+    .btn-delete {
+      background-color: #fee2e2;
+      color: #dc2626;
+      margin-left: 8px;
+    }
 
-        .action-btn {
-            font-weight: 600;
-            margin-right: 10px;
-            text-decoration: underline;
-            transition: color 0.2s;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
+    .btn-delete:hover {
+      background-color: #fecaca;
+    }
 
-        .action-btn.edit {
-            color: #3b82f6;
-        }
+    .pagination {
+      margin-top: 20px;
+    }
 
-        .action-btn.edit:hover {
-            color: #1d4ed8;
-        }
+    .service-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
 
-        .action-btn.delete {
-            color: #ef4444;
-        }
+    .service-image {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      object-fit: cover;
+      background-color: #f0f0f0;
+      border: 1px solid #ddd;
+    }
 
-        .action-btn.delete:hover {
-            color: #b91c1c;
-        }
+    .service-description {
+      max-width: 300px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      color: #475569;
+    }
+  </style>
 
-        .pagination {
-            margin-top: 20px;
-        }
-
-        .pagination .active {
-            font-weight: bold;
-            color: #ff69b4;
-        }
-    </style>
-
-    <div class="py-12">
-        <div class="mx-auto max-w-7xl sm:px-6 lg:px-8 service-container">
-            <h2 class="service-title">📸 Daftar Paket Jasa Foto Studio</h2>
-
-            <div class="mb-4 text-right">
-                <a href="{{ route('admin.services.create') }}" class="create-btn">➕ Tambah Service</a>
-            </div>
-
-            <table>
-                <thead>
-                    <tr>
-                        <th>Nama Paket</th>
-                        <th>Deskripsi</th>
-                        <th>Harga</th>
-                        <th>Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($services as $service)
-                        <tr>
-                            <td>
-                                <div class="service-info">
-                                    @if($service->image_url)
-                                        <img src="{{ asset('storage/' . $service->image_url) }}" alt="{{ $service->name }}" class="service-image" />
-                                    @else
-                                        <div class="service-image" style="background:#f0f0f0;display:flex;align-items:center;justify-content:center;color:#ccc;">No Image</div>
-                                    @endif
-                                    <div>
-                                        {{ $service->name }}
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <div class="service-description">{{ $service->description }}</div>
-                            </td>
-                            <td>Rp {{ number_format($service->price, 0, ',', '.') }}</td>
-                            <td>
-                                <a href="{{ route('admin.services.edit', $service) }}" class="action-btn edit">Edit</a>
-                                <form action="{{ route('admin.services.destroy', $service) }}" method="POST" style="display:inline;">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="action-btn delete" onclick="return confirm('Yakin ingin menghapus?')">Delete</button>
-                                </form>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="4" class="text-center text-gray-500">Belum ada layanan ditambahkan.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-
-            <div class="mt-4 pagination">
-                {{ $services->links() }}
-            </div>
+  <div class="py-12">
+    <div class="mx-auto max-w-6xl sm:px-6 lg:px-8">
+      <div class="soft-container">
+        <div class="flex justify-between items-center mb-4">
+          <h2>📁 Manajemen Jasa</h2>
+          <a href="{{ route('admin.services.create') }}" class="btn-create">➕ Tambah Service</a>
         </div>
+
+        <table>
+          <thead>
+            <tr>
+              <th>Nama Paket</th>
+              <th>Deskripsi</th>
+              <th>Harga</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+          <tbody>
+            @forelse ($services as $service)
+              <tr>
+                <td>
+                  <div class="service-info">
+                    @if($service->image_url)
+                      <img src="{{ asset('storage/' . $service->image_url) }}" alt="{{ $service->name }}" class="service-image">
+                    @else
+                      <div class="service-image" style="display:flex;align-items:center;justify-content:center;color:#ccc;">No Image</div>
+                    @endif
+                    <span>{{ $service->name }}</span>
+                  </div>
+                </td>
+                <td>
+                  <div class="service-description">{{ $service->description }}</div>
+                </td>
+                <td>Rp {{ number_format($service->price, 0, ',', '.') }}</td>
+                <td>
+                  <a href="{{ route('admin.services.edit', $service) }}" class="btn-action btn-edit">✏️ Edit</a>
+                  <form action="{{ route('admin.services.destroy', $service) }}" method="POST" style="display:inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn-action btn-delete" onclick="return confirm('Yakin ingin menghapus?')">🗑️ Hapus</button>
+                  </form>
+                </td>
+              </tr>
+            @empty
+              <tr>
+                <td colspan="4" class="text-center text-gray-500">Belum ada layanan ditambahkan.</td>
+              </tr>
+            @endforelse
+          </tbody>
+        </table>
+
+        <div class="pagination">
+          {{ $services->links() }}
+        </div>
+      </div>
     </div>
+  </div>
 </x-layouts.app>

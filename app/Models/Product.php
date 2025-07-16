@@ -15,6 +15,7 @@ class Product extends Model
         'description',
         'price',
         'image',
+        'is_active',  // tambahkan is_active
     ];
 
     /**
@@ -23,5 +24,13 @@ class Product extends Model
     public function category()
     {
         return $this->belongsTo(\App\Models\Category::class);
+    }
+
+    /**
+     * Scope untuk ambil produk yang aktif saja
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', 1);
     }
 }

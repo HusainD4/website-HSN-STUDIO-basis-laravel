@@ -3,40 +3,80 @@
 @section('title', 'Kategori Produk - HSN Studio')
 
 @section('content')
-<section class="section bg-light">
-    <div class="container">
-        <h2 class="text-center mb-5">Kategori Produk</h2>
+<div class="container content-page-container">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Judul Kategori -->
+            <div class="text-center mb-4">
+                <h2>
+                    HALAMAN: 
+                    {{ isset($currentCategory) ? $currentCategory->name : ' KATEGORI PRODUK KAMI' }}
+                </h2>
+            </div>
 
-        <!-- List Kategori -->
-        <div class="mb-4">
-            <div class="d-flex flex-wrap gap-2 justify-content-center">
+            <!-- Filter Kategori -->
+            <div class="d-flex flex-wrap gap-2 justify-content-center mb-4">
+                {{-- Tombol Semua Kategori --}}
+                <a href="{{ route('kategori.index') }}" 
+                   class="btn btn-outline-primary {{ request()->is('kategori') ? 'active' : '' }}">
+                    Semua Kategori
+                </a>
+
+                {{-- Tombol kategori yang memiliki produk --}}
                 @foreach ($categories as $cat)
-                    <a href="{{ route('kategori.show', $cat->slug) }}" class="btn btn-outline-primary {{ request()->is('kategori/'.$cat->slug) ? 'active' : '' }}">
-                        {{ $cat->name }}
-                    </a>
+                    @if ($cat->products->isNotEmpty())
+                        <a href="{{ route('kategori.show', $cat->slug) }}" 
+                           class="btn btn-outline-primary {{ request()->is('kategori/'.$cat->slug) ? 'active' : '' }}">
+                            {{ $cat->name }}
+                        </a>
+                    @endif
                 @endforeach
             </div>
-        </div>
 
-        <!-- Produk berdasarkan kategori -->
-        <div class="row mt-4">
-            @forelse ($products as $product)
-                <div class="col-md-4 mb-4">
-                    <div class="card h-100 shadow-sm">
-                        <img src="{{ $product->image_url ?? '/images/default-product.jpg' }}" class="card-img-top" alt="{{ $product->name }}">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ $product->name }}</h5>
-                            <p class="card-text text-muted">Rp {{ number_format($product->price, 0, ',', '.') }}</p>
-                            <a href="{{ route('produk.show', $product->id) }}" class="btn btn-primary">Lihat Detail</a>
+            <!-- Daftar Produk -->
+            @if($products->isEmpty())
+                <p class="text-center mt-4">Oops! Produk belum tersedia dalam kategori ini. 💖</p>
+            @else
+                <div class="row mt-3">
+                    @foreach($products as $product)
+                        <div class="col-md-4 mb-4">
+                            <div class="card h-100">
+                                @if($product->image)
+                                    <img src="{{ asset('storage/' . $product->image) }}"
+                                         class="card-img-top"
+                                         alt="{{ $product->name }}"
+                                         style="aspect-ratio: 16/9; object-fit: cover;">
+                                @else
+                                    <img src="{{ asset('images/default-product.png') }}"
+                                         class="card-img-top"
+                                         alt="Default Product Image"
+                                         style="aspect-ratio: 16/9; object-fit: cover;">
+                                @endif
+
+                                <div class="card-body d-flex flex-column text-center">
+                                    <h5 class="card-title fw-bold">{{ $product->name }}</h5>
+                                    <p class="card-text small">{{ Str::limit($product->description, 100) }}</p>
+
+                                    <div class="mt-auto">
+                                        <p class="text-muted mb-2">
+                                            <small>Kategori: {{ $product->category->name ?? 'Tidak diketahui' }}</small>
+                                        </p>
+                                        <p class="fw-bold fs-5" style="color: var(--soft-pink);">
+                                            Rp {{ number_format($product->price, 0, ',', '.') }}
+                                        </p>
+
+                                        <a href="{{ route('produk.show', $product->id) }}" 
+                                           class="btn btn-primary btn-sm mt-2">
+                                            Lihat Detail
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    @endforeach
                 </div>
-            @empty
-                <div class="col-12 text-center">
-                    <p class="text-muted">Produk belum tersedia dalam kategori ini.</p>
-                </div>
-            @endforelse
+            @endif
         </div>
     </div>
-</section>
+</div>
 @endsection

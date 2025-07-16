@@ -9,25 +9,33 @@ use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
-    // Tampil produk di frontend
+    // Tampil produk di frontend (hanya yang aktif)
     public function showProducts()
     {
-        $products = Product::with('category')->latest()->get();
+        // Ambil produk aktif dengan relasi category, urut terbaru
+        $products = Product::with('category')->where('is_active', 1)->latest()->get();
+
         return view('hsnstudio.product.product', compact('products'));
     }
 
     // Tampil detail produk di frontend
     public function show($id)
     {
-        $product = Product::with('category')->findOrFail($id);
+        // Pastikan produk aktif dan ada
+        $product = Product::with('category')
+            ->where('is_active', 1)
+            ->findOrFail($id);
+
         return view('hsnstudio.product.show', compact('product'));
     }
 
-    // Tampil halaman list produk di admin
+    // Tampil halaman list produk di admin (semua produk, termasuk yang tidak aktif)
     public function index()
     {
-        $products = Product::with('category')->latest()->paginate(10); // Lebih baik pakai paginate
-        return view('admin.product.admin_product', compact('products'));
+        // Ambil semua produk tanpa filter is_active supaya admin bisa kelola
+        $products = Product::with('category')->latest()->get();
+
+        return view('produk.index', compact('products'));
     }
 
     // Form tambah produk di admin
@@ -46,6 +54,7 @@ class ProductController extends Controller
             'price'       => 'required|numeric|min:0',
             'description' => 'required|string',
             'image'       => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'is_active'   => 'required|boolean', // tambahkan validasi is_active
         ]);
 
         // Simpan file gambar ke storage/app/public/products
@@ -75,6 +84,7 @@ class ProductController extends Controller
             'price'       => 'required|numeric|min:0',
             'description' => 'required|string',
             'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'is_active'   => 'required|boolean', // tambahkan validasi is_active
         ]);
 
         if ($request->hasFile('image')) {
