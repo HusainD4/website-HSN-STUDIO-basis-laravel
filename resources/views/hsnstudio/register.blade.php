@@ -29,7 +29,6 @@
             background: linear-gradient(-45deg, var(--grad-1), var(--grad-2), var(--grad-3), var(--grad-4));
             background-size: 400% 400%;
             animation: gradientAnimation 15s ease infinite;
-
             display: flex;
             min-height: 100vh;
             align-items: center;
@@ -67,6 +66,7 @@
         .form-group {
             margin-bottom: 1.25rem;
         }
+
         .form-label {
             display: block;
             margin-bottom: 0.5rem;
@@ -165,8 +165,8 @@
             <p>Hanya butuh beberapa detik untuk bergabung.</p>
         </div>
 
-        <form method="POST" action="{{ route('register') }}">
-        @csrf
+        <form method="POST" action="{{ route('hsnstudio.register.submit') }}">
+            @csrf
 
             <div class="form-group">
                 <label for="name" class="form-label">Nama Lengkap</label>
@@ -207,7 +207,7 @@
 
         <div class="bottom-link">
             Sudah punya akun?
-        <a href="{{ route('login') }}">Login di sini</a>
+            <a href="{{ url('/hsnstudio/login') }}">Login di sini</a>
         </div>
     </div>
 </body>

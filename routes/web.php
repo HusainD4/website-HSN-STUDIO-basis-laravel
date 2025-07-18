@@ -16,6 +16,8 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CustomerTransactionController;
 use App\Http\Controllers\Auth\UserLoginController;
+use App\Http\Controllers\Auth\RegisterUserController;
+use App\Http\Controllers\AuthController;
 
 // --- Controllers (Admin) ---
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
@@ -73,6 +75,29 @@ Route::middleware('auth')->prefix('settings')->name('settings.')->group(function
     Route::view('/profile', 'settings.profile')->name('profile'); // Optional: view profile settings
 });
 
+
+use App\Http\Controllers\Auth\AdminLoginController;
+
+Route::get('/login', [AdminLoginController::class, 'showLoginForm'])->name('admin.login');
+Route::post('/login', [AdminLoginController::class, 'login']);
+Route::post('/logout', [AdminLoginController::class, 'logout'])->name('admin.logout');
+
+// ===================================================================================
+// CUSTOMER AUTH (Login/Logout for HSN Studio Customers)
+// ===================================================================================
+// =======================
+// CUSTOMER LOGIN (Hsn Studio)
+// =======================
+Route::post('/hsnstudio/login', [UserLoginController::class, 'login']);
+Route::post('/hsnstudio/logout', [UserLoginController::class, 'logout'])->name('hsnstudio.logout');
+
+// Route::get('/hsnstudio/login', [UserLoginController::class, 'showLoginForm'])->name('hsnstudio.login');
+
+Route::middleware('guest')->group(function () {
+    Route::get('/hsnstudio/login', [UserLoginController::class, 'showLoginForm'])->name('hsnstudio.login');
+    Route::get('/hsnstudio/register', [RegisterUserController::class, 'showRegisterForm'])->name('hsnstudio.register');
+    Route::post('/hsnstudio/register', [RegisterUserController::class, 'store'])->name('hsnstudio.register.submit');
+});
 // ===================================================================================
 // ADMIN ROUTES
 // ===================================================================================
@@ -101,16 +126,19 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'is.admin'])->group(
     Route::get('/transactions/{id}', [AdminTransactionController::class, 'show'])->name('transactions.show');
 
     // Transaction Items
-    Route::get('/transactions/{transaction}/items', [AdminTransactionItemController::class, 'index'])->name('transactions.items.index');
-    Route::get('/transactions/{transaction}/items/{item}', [AdminTransactionItemController::class, 'show'])->name('transactions.items.show');
+    Route::get('/transactions/{transaction}/items', [TransactionItemController::class, 'index'])
+        ->name('admin.transactions.items.index');
+
+    Route::get('/transactions/{transaction}/items/{item}', [TransactionItemController::class, 'show'])
+        ->name('admin.transactions.items.show');
+
+    // Tambahkan ini:
+    Route::post('/transactions/{transaction}/items/update-multiple', 
+        [TransactionItemController::class, 'updateMultiple'])
+        ->name('admin.transactionitems.updateMultiple');
+
 });
 
-// ===================================================================================
-// USER AUTH (Login/Logout)
-// ===================================================================================
-Route::get('/hsnstudio/login', [UserLoginController::class, 'showLoginForm'])->name('user.login');
-Route::post('/hsnstudio/login', [UserLoginController::class, 'login']);
-Route::post('/hsnstudio/logout', [UserLoginController::class, 'logout'])->name('user.logout');
 
 // ===================================================================================
 // DEFAULT AUTH ROUTES (Breeze/Fortify/Volt)

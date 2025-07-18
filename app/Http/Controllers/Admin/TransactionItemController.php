@@ -43,23 +43,21 @@ class TransactionItemController extends Controller
 
     //     return response()->json(['message' => 'Semua status produk berhasil diperbarui.']);
     // }
-    public function updateMultiple(Request $request)
+    public function updateMultiple(Request $request, Transaction $transaction)
     {
-        $request->validate([
-            'transaction_id' => 'required|integer|exists:transactions,id',
-            'status' => 'required|string|in:pending,cancel,dikirim,sukses',
-        ]);
+        $items = $request->input('items', []); // expects array: item_id => [field1=>value,...]
+        
+        foreach ($items as $itemId => $fields) {
+            $item = TransactionItem::where('transaction_id', $transaction->id)
+                                    ->where('id', $itemId)
+                                    ->first();
+            if ($item) {
+                $item->update($fields);
+            }
+        }
 
-        $transactionId = $request->input('transaction_id');
-        $status = $request->input('status');
-
-        // Update semua item yang terkait transaction id ini
-        \App\Models\TransactionItem::where('transaction_id', $transactionId)
-            ->update(['action' => $status]);
-
-        return response()->json([
-            'message' => 'Status pesanan berhasil diupdate!',
-        ]);
+        return redirect()->route('admin.transactions.items.show', $transaction->id)
+                        ->with('success', 'Item transaksi berhasil diperbarui.');
     }
 
 }

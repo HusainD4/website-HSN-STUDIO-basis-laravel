@@ -80,10 +80,10 @@
                     </li>
                 @else
                     <li class="nav-item">
-                        <a class="nav-link px-3" href="{{ route('login') }}">Login</a>
+                        <a class="nav-link px-3" href="{{ route('hsnstudio.login') }}">Login</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link px-3" href="{{ route('register') }}">Register</a>
+                        <a class="nav-link px-3" href="{{ route('hsnstudio.register') }}">Register</a>
                     </li>
                 @endauth
             </ul>

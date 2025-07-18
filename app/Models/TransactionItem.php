@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Transaction;
+use App\Http\Controllers\Controller;
 
 class TransactionItem extends Model
 {
@@ -26,4 +28,40 @@ class TransactionItem extends Model
         
 
     }
+
+    
+        public function updateAction(Request $request, TransactionItem $transactionItem)
+        {
+            $request->validate([
+                'action' => 'required|in:pending,cancel,dikirim,sukses',
+            ]);
+
+            $transactionItem->update([
+                'action' => $request->action
+            ]);
+
+            return response()->json([
+                'message' => 'Status pesanan berhasil diperbarui!',
+            ]);
+        }
+
+        public function updateMultiple(Request $request, Transaction $transaction)
+        {
+            $items = $request->input('items', []);
+
+            foreach ($items as $itemId => $fields) {
+                $item = TransactionItem::where('transaction_id', $transaction->id)
+                                        ->where('id', $itemId)
+                                        ->first();
+                if ($item) {
+                    $item->update($fields);
+                }
+            }
+
+            return redirect()->route('admin.transactions.items.show', $transaction->id)
+                            ->with('success', 'Item transaksi berhasil diperbarui.');
+        }
+    
+
+    
 }

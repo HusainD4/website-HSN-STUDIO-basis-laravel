@@ -1,6 +1,5 @@
 <?php
 
-// Pastikan namespace-nya benar sesuai lokasi file
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
@@ -15,61 +14,51 @@ class AdminLoginController extends Controller
      */
     public function showLoginForm()
     {
-        // Pastikan view ini ada di resources/views/admin/login.blade.php
-        return view('admin.login');
+        // View login admin: resources/views/livewire/auth/login.blade.php
+        return view('livewire.auth.login');
     }
 
     /**
-     * Menangani permintaan login dari admin.
+     * Menangani proses login admin.
      */
     public function login(Request $request)
     {
-        // 1. Validasi input dari form
         $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
 
-        // 2. Coba lakukan otentikasi menggunakan guard standar ('web')
         if (! Auth::attempt($request->only('email', 'password'), $request->boolean('remember'))) {
-            // Jika kredensial salah, kirim kembali dengan pesan error
             throw ValidationException::withMessages([
-                'email' => 'Email atau password yang Anda masukkan salah.',
+                'email' => 'Email atau password salah.',
             ]);
         }
 
-        // 3. Jika kredensial benar, periksa apakah pengguna adalah admin
-        //    (Asumsi ada kolom 'is_admin' di tabel users)
-        if (! $request->user()->is_admin) { // <-- PENTING: Ganti 'is_admin' jika nama kolom Anda berbeda
-            // Jika bukan admin, langsung logout lagi
+        $user = Auth::user();
+
+        if (! $user->is_admin) {
             Auth::logout();
 
-            // Kirim pesan error bahwa mereka tidak punya akses
             throw ValidationException::withMessages([
-                'email' => 'Anda tidak memiliki hak akses sebagai admin.',
+                'email' => 'Anda tidak memiliki akses sebagai admin.',
             ]);
         }
 
-        // 4. Jika berhasil login dan merupakan admin, regenerate session
         $request->session()->regenerate();
 
-        // 5. Arahkan ke dashboard admin
         return redirect()->intended(route('admin.dashboard'));
     }
 
     /**
-     * Menangani permintaan logout dari admin.
+     * Logout admin.
      */
     public function logout(Request $request)
     {
-        // Gunakan guard standar untuk logout
         Auth::logout();
 
-        // Invalidate session dan regenerate token untuk keamanan
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        // Arahkan kembali ke halaman login admin
         return redirect()->route('admin.login');
     }
 }

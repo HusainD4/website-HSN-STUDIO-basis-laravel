@@ -4,9 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Login - HSN Studio</title>
-
     {{-- CSS untuk tema sekarang ada di dalam file ini --}}
-    <style>
+   <style>
         /* Reset dan Font Dasar */
         :root {
             --color-blue-500: #3B82F6;
@@ -213,8 +212,7 @@
         @endif
 
         <form action="{{ route('login') }}" method="POST">
-        @csrf
-    {{-- Input email, password, dan tombol submit --}}
+            @csrf
 
             <div class="form-group">
                 <label for="email" class="form-label">Alamat Email</label>
@@ -229,7 +227,7 @@
             </div>
 
             <div class="remember-me">
-                <input type="checkbox" name="remember" id="remember" class="form-check-input" {{ old('remember') ? 'checked' : '' }}>
+                <input type="checkbox" name="remember" id="remember" {{ old('remember') ? 'checked' : '' }}>
                 <label for="remember">Ingat Saya</label>
             </div>
 
@@ -237,9 +235,9 @@
         </form>
 
         <div class="bottom-link">
-    Belum punya akun?
-    <a href="{{ route('register') }}">Daftar di sini</a>
-</div>
+            Belum punya akun?
+            <a href="{{ url('/hsnstudio/register') }}">Daftar di sini</a>
+        </div>
     </div>
 </body>
 </html>
