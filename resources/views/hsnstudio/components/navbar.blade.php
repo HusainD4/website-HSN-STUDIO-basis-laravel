@@ -46,7 +46,6 @@
                 </li>
 
                 @auth
-                    <!-- Dropdown profil dengan email -->
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle px-3 d-flex align-items-center" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             {{-- Bisa ganti email dengan avatar kalau ada --}}
@@ -54,17 +53,22 @@
                             <span class="d-none d-lg-inline">{{ auth()->user()->email }}</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end" aria-labelledby="profileDropdown">
-                            <li><a href="{{ route('settings.index') }}">Settings</a></li>
+                            {{-- INI BAGIAN YANG DIPERBAIKI --}}
+                            <li><a class="dropdown-item" href="{{ route('settings.index') }}">Settings</a></li>
                             <li><a class="dropdown-item" href="{{ route('account') }}">Account</a></li>
-                            <li><a class="dropdown-item" href="{{ route('cart.index') }}">
-                                Keranjang 
-                                @php
-                                    $count = is_array(session('cart')) ? count(session('cart')) : 0;
-                                @endphp
-                                @if($count > 0)
-                                    <span class="badge bg-danger ms-2">{{ $count }}</span>
-                                @endif
-                            </a></li>
+                            <li><a class="dropdown-item" href="{{ route('transaksi.saya') }}">Transaksi Saya</a></li>
+
+                            <li>
+                                <a class="dropdown-item" href="{{ route('cart.index') }}">
+                                    Keranjang 
+                                    @php
+                                        $count = is_array(session('cart')) ? count(session('cart')) : 0;
+                                    @endphp
+                                    @if($count > 0)
+                                        <span class="badge bg-danger ms-2">{{ $count }}</span>
+                                    @endif
+                                </a>
+                            </li>
                             <li><hr class="dropdown-divider"></li>
                             <li>
                                 <form action="{{ route('logout') }}" method="POST" class="m-0">
@@ -75,12 +79,11 @@
                         </ul>
                     </li>
                 @else
-                    <!-- Kalau belum login, tampilkan Login dan Register -->
                     <li class="nav-item">
-                        <a class="nav-link px-3" href="{{ route('user.login') }}">Login</a>
+                        <a class="nav-link px-3" href="{{ route('login') }}">Login</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link px-3" href="{{ route('user.register') }}">Register</a>
+                        <a class="nav-link px-3" href="{{ route('register') }}">Register</a>
                     </li>
                 @endauth
             </ul>

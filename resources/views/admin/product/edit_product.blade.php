@@ -1,7 +1,7 @@
 <x-layouts.app :title="'Edit Produk'">
   <style>
     body {
-      background-color: #fdf2f8; /* pink-50 */
+      background-color: #fdf2f8;
     }
 
     .form-input,
@@ -11,7 +11,7 @@
       padding: 0.5rem 0.75rem;
       font-size: 1rem;
       line-height: 1.5;
-      border: 1px solid #ec4899; /* pink-500 */
+      border: 1px solid #ec4899;
       border-radius: 0.5rem;
       background-color: white;
       color: #1e293b;
@@ -26,19 +26,19 @@
     .form-select:focus,
     .form-textarea:focus {
       outline: none;
-      border-color: #d946ef; /* pink-600 */
+      border-color: #d946ef;
       box-shadow: 0 0 0 3px rgba(236, 72, 153, 0.3);
     }
 
     label {
       margin-bottom: 0.25rem;
       display: block;
-      color: #be185d; /* pink-800 */
+      color: #be185d;
       font-weight: 600;
     }
 
     button[type="submit"] {
-      background-color: #f472b6; /* pink-400 */
+      background-color: #f472b6;
       color: #000000;
       padding: 0.5rem 1rem;
       border-radius: 0.5rem;
@@ -50,12 +50,12 @@
     }
 
     button[type="submit"]:hover {
-      background-color: #ec4899; /* pink-500 */
+      background-color: #ec4899;
       box-shadow: 0 4px 15px rgba(236, 72, 153, 0.6);
     }
 
     .text-red-600 {
-      color: #e11d48; /* merah-pink */
+      color: #e11d48;
     }
 
     .bg-red-100 {
@@ -121,7 +121,7 @@
       <div>
         <label for="name">Nama Produk <span class="text-red-600">*</span></label>
         <input type="text" name="name" id="name" class="form-input"
-          value="{{ old('name', $product->name) }}" required autofocus>
+          value="{{ old('name', $product->name) }}" required autofocus autocomplete="off">
       </div>
 
       <div>
@@ -138,7 +138,8 @@
 
       <div>
         <label for="price">Harga (Rp) <span class="text-red-600">*</span></label>
-        <input type="number" name="price" id="price" class="form-input" value="{{ old('price', $product->price) }}" min="0" step="100" required>
+        <input type="number" name="price" id="price" class="form-input"
+          value="{{ old('price', $product->price) }}" min="0" step="100" required>
       </div>
 
       <div>
@@ -147,14 +148,12 @@
       </div>
 
       <div>
-        <label for="image">Gambar Produk <span class="text-red-600">*</span></label>
-
-        @if($product->image)
+        <label for="image">Gambar Produk</label>
+        @if ($product->image)
           <div class="mb-2">
             <img src="{{ asset('storage/' . $product->image) }}" alt="Gambar Produk Saat Ini" class="h-24">
           </div>
         @endif
-
         <input type="file" name="image" id="image" class="form-input" accept="image/*">
         <small class="text-gray-500">Kosongkan jika tidak ingin mengganti gambar.</small>
       </div>

@@ -165,10 +165,8 @@
             <p>Hanya butuh beberapa detik untuk bergabung.</p>
         </div>
 
-        <form method="POST" action="{{ route('user.register.post') }}">
-
-
-            @csrf
+        <form method="POST" action="{{ route('register') }}">
+        @csrf
 
             <div class="form-group">
                 <label for="name" class="form-label">Nama Lengkap</label>
@@ -209,7 +207,7 @@
 
         <div class="bottom-link">
             Sudah punya akun?
-            <a href="{{ route('user.login') }}">Login di sini</a>
+        <a href="{{ route('login') }}">Login di sini</a>
         </div>
     </div>
 </body>

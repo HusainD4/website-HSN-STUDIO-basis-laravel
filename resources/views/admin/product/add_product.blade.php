@@ -2,7 +2,7 @@
 
 <style>
   body {
-    background-color: #a5d8ff, #ffffff, #ffc8dd;
+    background: linear-gradient(to right, #a5d8ff, #ffffff, #ffc8dd);
   }
 
   .form-input,
@@ -12,7 +12,7 @@
     padding: 0.5rem 0.75rem;
     font-size: 1rem;
     line-height: 1.5;
-    border: 1px solid #ec4899; /* pink-500 */
+    border: 1px solid #ec4899;
     border-radius: 0.5rem;
     background-color: white;
     color: #1e293b;
@@ -34,21 +34,20 @@
   label {
     margin-bottom: 0.25rem;
     display: block;
-    color: #be185d; /* pink-800 */
+    color: #be185d;
     font-weight: 600;
   }
 
   button[type="submit"] {
     cursor: pointer;
     font-weight: 600;
-    background-color: #f472b6; /* pink-400 */
+    background-color: #f472b6;
     color: #000000;
     padding: 0.5rem 1rem;
     border-radius: 0.5rem;
     border: none;
     box-shadow: 0 2px 8px rgba(244, 114, 182, 0.4);
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
-    display: inline-block;
   }
 
   button[type="submit"]:hover {
@@ -126,6 +125,16 @@
     </div>
 
     <div>
+      <label for="stock">Stok</label>
+      <input type="number" name="stock" id="stock" class="form-input" value="{{ old('stock', 9999) }}" min="0">
+    </div>
+
+    <div>
+      <label for="weight">Berat (gram)</label>
+      <input type="number" name="weight" id="weight" class="form-input" value="{{ old('weight', 1000) }}" min="0">
+    </div>
+
+    <div>
       <label for="description">Deskripsi <span class="text-red-600">*</span></label>
       <textarea name="description" id="description" rows="4" class="form-textarea" required>{{ old('description') }}</textarea>
     </div>
@@ -133,6 +142,14 @@
     <div>
       <label for="image">Gambar Produk <span class="text-red-600">*</span></label>
       <input type="file" name="image" id="image" class="form-input" accept="image/*" required>
+    </div>
+
+    <div>
+      <label for="is_active">Tampilkan Produk?</label>
+      <select name="is_active" id="is_active" class="form-select">
+        <option value="1" {{ old('is_active', 1) == 1 ? 'selected' : '' }}>Ya</option>
+        <option value="0" {{ old('is_active') == 0 ? 'selected' : '' }}>Tidak</option>
+      </select>
     </div>
 
     <div class="mt-4">

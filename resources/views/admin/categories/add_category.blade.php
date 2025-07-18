@@ -73,7 +73,7 @@
 
     <div class="max-w-2xl mx-auto">
         <div class="soft-container">
-            <h2>✨ Tambah Kategori Manis ✨</h2>
+            <h2>✨ Tambah Kategori ✨</h2>
 
             @if ($errors->any())
                 <div class="alert">

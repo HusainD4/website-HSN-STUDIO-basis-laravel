@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Http;
 class CategoryController extends Controller
 {
     /**
@@ -37,4 +37,27 @@ class CategoryController extends Controller
             'selectedCategory' => $category,
         ]);
     }
+
+    public function sync($id, Request $request)
+    {
+        $category = Category::findOrFail($id);  // ✅ Perbaikan disini
+
+        $response = Http::post('https://api.phb-umkm.my.id/api/product-category/sync', [
+            'client_id' => env('CLIENT_ID'),
+            'client_secret' => env('CLIENT_SECRET'),
+            'seller_product_category_id' => (string) $category->id,
+            'name' => $category->name,
+            'description' => $category->description,
+            'is_active' => $request->is_active == 1 ? false : true,
+        ]);
+
+        if ($response->successful() && isset($response['product_category_id'])) {
+            $category->hub_category_id = $request->is_active == 1 ? null : $response['product_category_id'];
+            $category->save();
+        }
+
+        session()->flash('successMessage', 'Category Synced Successfully');
+        return redirect()->back();
+    }
+
 }

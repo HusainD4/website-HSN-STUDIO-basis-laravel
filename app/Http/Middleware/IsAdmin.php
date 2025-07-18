@@ -16,12 +16,20 @@ class IsAdmin
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // Pastikan user sudah login dan memiliki role 'admin'
-        if (Auth::check() && Auth::user()->role === 'admin') {
-            return $next($request);
+        // ✅ Cek apakah user login
+        if (!Auth::check()) {
+            return redirect('/login')->with('error', 'Silakan login terlebih dahulu.');
         }
 
-        // Jika bukan admin, arahkan ke halaman lain (misal: dashboard) dengan pesan error
+        // ✅ Ambil user yang login
+        $user = Auth::user();
+
+        // ✅ Cek apakah role-nya adalah "admin"
+        if ($user->role === 'users') {
+            return $next($request); // ✅ Lanjutkan ke halaman tujuan
+        }
+
+        // ❌ Jika bukan admin, tolak akses
         return redirect('/dashboard')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
     }
 }

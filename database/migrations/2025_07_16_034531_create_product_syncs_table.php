@@ -7,22 +7,22 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration
 {
     /**
-     * Run the migrations.
+     * Menambahkan kolom hub_product_id ke tabel products.
      */
     public function up(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->boolean('is_active')->default(true);
+            $table->unsignedBigInteger('hub_product_id')->nullable();
         });
     }
 
     /**
-     * Reverse the migrations.
+     * Menghapus kolom hub_product_id dari tabel products saat rollback.
      */
     public function down(): void
     {
         Schema::table('products', function (Blueprint $table) {
-            $table->dropColumn('is_active');
+            $table->dropColumn('hub_product_id');
         });
     }
 };

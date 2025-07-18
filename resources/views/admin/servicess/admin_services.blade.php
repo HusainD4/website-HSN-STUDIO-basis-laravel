@@ -15,9 +15,10 @@
     }
 
     .soft-container h2 {
-      font-size: 1.5rem;
+      font-size: 1.8rem;
+      font-weight: 700;
       color: #3b0764;
-      margin-bottom: 20px;
+      margin-bottom: 1.5rem;
     }
 
     table {

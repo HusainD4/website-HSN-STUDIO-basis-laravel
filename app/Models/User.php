@@ -10,24 +10,27 @@ use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
+    // --- BAGIAN INI DIPERBAIKI ---
+    // Menambahkan 'role' ke dalam array $fillable agar bisa disimpan
+    // saat menggunakan metode User::create().
     protected $fillable = [
         'name',
         'email',
         'password',
+        'role', // Ditambahkan
     ];
 
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var list<string>
+     * @var array<int, string>
      */
     protected $hidden = [
         'password',
@@ -57,5 +60,11 @@ class User extends Authenticatable
             ->take(2)
             ->map(fn ($word) => Str::substr($word, 0, 1))
             ->implode('');
+    }
+
+
+        public function role()
+    {
+        return $this->belongsTo(Role::class);
     }
 }

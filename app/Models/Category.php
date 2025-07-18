@@ -13,6 +13,17 @@ class Category extends Model
         'name',
         'slug',
         'brand_name',
+        'description',
+        'hub_category_id',
+        'is_active',
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
+
+    protected $attributes = [
+        'is_active' => true,
     ];
 
     /**

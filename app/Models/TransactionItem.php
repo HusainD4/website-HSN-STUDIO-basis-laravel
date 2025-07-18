@@ -22,6 +22,8 @@ class TransactionItem extends Model
      */
     public function transaction()
     {
-        return $this->belongsTo(Transaction::class);
+        return $this->belongsTo(\App\Models\Transaction::class);
+        
+
     }
 }

@@ -6,46 +6,39 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Http;
 
 class ProductController extends Controller
 {
     // Tampil produk di frontend (hanya yang aktif)
     public function showProducts()
     {
-        // Ambil produk aktif dengan relasi category, urut terbaru
         $products = Product::with('category')->where('is_active', 1)->latest()->get();
-
         return view('hsnstudio.product.product', compact('products'));
     }
 
-    // Tampil detail produk di frontend
+    // Tampil detail produk
     public function show($id)
     {
-        // Pastikan produk aktif dan ada
-        $product = Product::with('category')
-            ->where('is_active', 1)
-            ->findOrFail($id);
-
+        $product = Product::with('category')->where('is_active', 1)->findOrFail($id);
         return view('hsnstudio.product.show', compact('product'));
     }
 
-    // Tampil halaman list produk di admin (semua produk, termasuk yang tidak aktif)
+    // Tampil list produk admin
     public function index()
     {
-        // Ambil semua produk tanpa filter is_active supaya admin bisa kelola
         $products = Product::with('category')->latest()->get();
-
         return view('produk.index', compact('products'));
     }
 
-    // Form tambah produk di admin
+    // Form tambah produk
     public function create()
     {
         $categories = Category::all();
         return view('admin.product.add_product', compact('categories'));
     }
 
-    // Simpan produk baru di admin
+    // Simpan produk baru
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -54,18 +47,20 @@ class ProductController extends Controller
             'price'       => 'required|numeric|min:0',
             'description' => 'required|string',
             'image'       => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'is_active'   => 'required|boolean', // tambahkan validasi is_active
+            'is_active'   => 'required|boolean',
         ]);
 
-        // Simpan file gambar ke storage/app/public/products
-        $data['image'] = $request->file('image')->store('products', 'public');
+        // Upload gambar
+        $path = $request->file('image')->store('products', 'public');
+        $data['image'] = $path;
+        $data['image_url'] = asset('storage/' . $path);
 
         Product::create($data);
 
         return redirect()->route('admin.products.index')->with('success', 'Produk berhasil ditambahkan.');
     }
 
-    // Form edit produk di admin
+    // Form edit produk
     public function edit($id)
     {
         $product = Product::findOrFail($id);
@@ -73,7 +68,7 @@ class ProductController extends Controller
         return view('admin.product.edit_product', compact('product', 'categories'));
     }
 
-    // Update produk di admin
+    // Update produk
     public function update(Request $request, $id)
     {
         $product = Product::findOrFail($id);
@@ -84,16 +79,17 @@ class ProductController extends Controller
             'price'       => 'required|numeric|min:0',
             'description' => 'required|string',
             'image'       => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-            'is_active'   => 'required|boolean', // tambahkan validasi is_active
+            'is_active'   => 'required|boolean',
         ]);
 
         if ($request->hasFile('image')) {
-            // Hapus gambar lama jika ada
             if ($product->image && Storage::disk('public')->exists($product->image)) {
                 Storage::disk('public')->delete($product->image);
             }
-            // Simpan gambar baru
-            $data['image'] = $request->file('image')->store('products', 'public');
+
+            $path = $request->file('image')->store('products', 'public');
+            $data['image'] = $path;
+            $data['image_url'] = asset('storage/' . $path);
         }
 
         $product->update($data);
@@ -101,12 +97,11 @@ class ProductController extends Controller
         return redirect()->route('admin.products.index')->with('success', 'Produk berhasil diupdate.');
     }
 
-    // Hapus produk di admin
+    // Hapus produk
     public function destroy($id)
     {
         $product = Product::findOrFail($id);
 
-        // Hapus gambar lama jika ada
         if ($product->image && Storage::disk('public')->exists($product->image)) {
             Storage::disk('public')->delete($product->image);
         }
@@ -114,5 +109,34 @@ class ProductController extends Controller
         $product->delete();
 
         return redirect()->route('admin.products.index')->with('success', 'Produk berhasil dihapus.');
+    }
+
+    // Sinkronisasi produk dengan API eksternal
+    public function sync($id, Request $request)
+    {
+        $product = Product::with('category')->findOrFail($id);
+
+        $response = Http::post('https://api.phb-umkm.my.id/api/product/sync', [
+            'client_id' => env('CLIENT_ID'),
+            'client_secret' => env('CLIENT_SECRET'),
+            'seller_product_id' => (string) $product->id,
+            'name' => $product->name,
+            'description' => $product->description,
+            'price' => $product->price,
+            'stock' => $product->stock,
+            'sku' => $product->sku,
+            'image_url' => $product->image_url,
+            'weight' => $product->weight,
+            'is_active' => $request->is_active == 1 ? false : true,
+            'category_id' => (string) optional($product->category)->hub_category_id,
+        ]);
+
+        if ($response->successful() && isset($response['product_id'])) {
+            $product->hub_product_id = $request->is_active == 1 ? null : $response['product_id'];
+            $product->save();
+        }
+
+        session()->flash('successMessage', 'Product Synced Successfully');
+        return redirect()->back();
     }
 }

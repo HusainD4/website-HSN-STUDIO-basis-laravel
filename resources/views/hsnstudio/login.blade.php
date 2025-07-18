@@ -212,8 +212,9 @@
             </div>
         @endif
 
-        <form action="{{ route('user.login') }}" method="POST">
-            @csrf
+        <form action="{{ route('login') }}" method="POST">
+        @csrf
+    {{-- Input email, password, dan tombol submit --}}
 
             <div class="form-group">
                 <label for="email" class="form-label">Alamat Email</label>
@@ -236,9 +237,9 @@
         </form>
 
         <div class="bottom-link">
-             Belum punya akun?
-        <a href="{{ url('/hsnstudio/register') }}">Daftar di sini</a>
-        </div>
+    Belum punya akun?
+    <a href="{{ route('register') }}">Daftar di sini</a>
+</div>
     </div>
 </body>
 </html>

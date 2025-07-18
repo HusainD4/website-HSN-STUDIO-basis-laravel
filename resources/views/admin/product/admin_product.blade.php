@@ -1,290 +1,190 @@
 <x-layouts.app :title="'Manajemen Produk'">
-<style>
-  body {
-    background: linear-gradient(135deg, #a5d8ff, #ffffff, #ffc8dd);
-    font-family: 'Poppins', sans-serif;
-    margin: 0;
-    padding: 0;
-  }
+    <style>
+        body {
+            background: linear-gradient(to right, #a5d8ff, #ffffff, #ffc8dd);
+            font-family: 'Inter', sans-serif;
+        }
 
-  .p-6 {
-    background-color: #ffffff;
-    border-radius: 1.25rem;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
-    border: 1px solid #bfdbfe;
-    padding: 2rem;
-  }
+        .soft-container {
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+            padding: 32px;
+            margin-top: 40px;
+        }
 
-  h1 {
-    color: #ec4899;
-    text-shadow: 1px 1px 0 #fde7f3;
-  }
+        .soft-container h2{
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #3b0764;
+            margin-bottom: 1.5rem;
+        }
 
-  .btn-action {
-    font-weight: 600;
-    padding: 0.4rem 0.8rem;
-    border-radius: 0.5rem;
-    background-color: #fbcfe8;
-    color: #6b21a8;
-    box-shadow: 0 2px 5px rgba(219, 39, 119, 0.25);
-    transition: all 0.3s ease-in-out;
-    border: none;
-    font-size: 0.85rem;
-    cursor: pointer;
-  }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
 
-  .btn-action:hover {
-    background-color: #f9a8d4;
-    color: #4c1d95;
-    box-shadow: 0 4px 12px rgba(219, 39, 119, 0.4);
-    text-decoration: none;
-  }
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            text-align: left;
+        }
 
-  table {
-    width: 100%;
-    border-radius: 0.75rem;
-    overflow: hidden;
-    background-color: #ffffff;
-    border-collapse: collapse;
-  }
+        th {
+            background-color: #f0f4f8;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
 
-  thead tr {
-    background-color: #dbeafe;
-  }
+        .btn-create {
+            background: linear-gradient(to right, #60a5fa, #f472b6);
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.2s;
+        }
 
-  thead th {
-    font-weight: 700;
-    color: #1e3a8a;
-    text-transform: uppercase;
-    padding: 0.75rem 1rem;
-    text-align: left;
-    white-space: nowrap;
-  }
+        .btn-action {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            border-radius: 8px;
+            text-decoration: none;
+        }
 
-  tbody td {
-    padding: 0.75rem 1rem;
-    color: #1e3a8a;
-    vertical-align: middle;
-    white-space: nowrap;
-  }
+        .btn-edit {
+            background-color: #dbeafe;
+            color: #2563eb;
+        }
 
-  tbody tr:hover {
-    background-color: #f0f9ff;
-  }
+        .btn-delete {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
 
-  tbody img {
-    width: 64px;
-    height: 64px;
-    object-fit: cover;
-    border-radius: 0.5rem;
-    border: 1px solid #a5d8ff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
-    cursor: pointer;
-    transition: transform 0.2s ease-in-out;
-  }
+        .toggle-switch {
+            position: relative;
+            width: 42px;
+            height: 24px;
+        }
 
-  tbody img:hover {
-    transform: scale(1.05);
-  }
+        .toggle-switch input {
+            display: none;
+        }
 
-  .btn-action.bg-green-200 {
-    background-color: #bbf7d0;
-    color: #065f46;
-    border: 1px solid #86efac;
-  }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            background-color: #ccc;
+            border-radius: 24px;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            transition: 0.4s;
+        }
 
-  .btn-action.bg-green-200:hover {
-    background-color: #86efac;
-    color: #064e3b;
-  }
+        .slider:before {
+            content: "";
+            position: absolute;
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            border-radius: 50%;
+            transition: 0.4s;
+        }
 
-  .btn-action.bg-red-200 {
-    background-color: #fecaca;
-    color: #991b1b;
-    border: 1px solid #f87171;
-  }
+        input:checked + .slider {
+            background-color: #4ade80;
+        }
 
-  .btn-action.bg-red-200:hover {
-    background-color: #f87171;
-    color: #7f1d1d;
-  }
+        input:checked + .slider:before {
+            transform: translateX(18px);
+        }
 
-  .modal {
-    display: none;
-    position: fixed;
-    z-index: 9999;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.75);
-  }
+        .pagination {
+            margin-top: 20px;
+        }
+    </style>
+    
+    <div class="py-12">
+        <div class="mx-auto max-w-7xl sm:px-6 lg:px-8">
+            <div class="soft-container">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-center fw-bold mb-4">📦 Manajemen Produk</h2>
+                    <a href="{{ route('admin.products.create') }}" class="btn-create">+ Tambah Produk</a>
+                </div>
 
-  .modal-content {
-    margin: 5% auto;
-    display: block;
-    max-width: 80%;
-    border-radius: 1rem;
-    box-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
-  }
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Gambar</th>
+                            <th>Nama</th>
+                            <th>Kategori</th>
+                            <th>Deskripsi</th>
+                            <th>Harga</th>
+                            <th>Status</th>
+                            <th>On/Off</th> <!-- Sudah diganti -->
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @forelse ($products as $index => $product)
+                            <tr>
+                                <td>{{ $index + 1 }}</td>
+                                <td>
+                                    @if ($product->image)
+                                        <img src="{{ asset('storage/' . $product->image) }}" alt="Gambar" width="60">
+                                    @else
+                                        <span class="text-gray-400 italic">Tidak ada gambar</span>
+                                    @endif
+                                </td>
+                                <td class="font-semibold text-blue-800">{{ $product->name }}</td>
+                                <td>{{ $product->category->name ?? '-' }}</td>
+                                <td>{{ Str::limit($product->description, 50) }}</td>
+                                <td>Rp {{ number_format($product->price, 0, ',', '.') }}</td>
+                                <td>
+                                    {{ $product->hub_product_id ? '✅ Sinkron' : '❌ Tidak Sinkron' }}
+                                </td>
+                                <td>
+                                    <form id="sync-product-{{ $product->id }}" action="{{ route('admin.products.sync', $product->id) }}" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="is_active" value="@if($product->hub_product_id) 1 @else 0 @endif">
+                                        @if($product->hub_product_id)
+                                            <flux:switch checked onchange="document.getElementById('sync-product-{{ $product->id }}').submit()" />
+                                        @else
+                                            <flux:switch onchange="document.getElementById('sync-product-{{ $product->id }}').submit()" />
+                                        @endif
+                                    </form>
+                                </td>
+                                <td class="space-x-2">
+                                    <a href="{{ route('admin.products.edit', $product) }}" class="btn-action btn-edit">✏️ Edit</a>
+                                    <form action="{{ route('admin.products.destroy', $product) }}" method="POST" style="display:inline-block;" onsubmit="return confirm('Yakin ingin menghapus produk ini?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn-action btn-delete">🗑️ Hapus</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="9" class="text-center text-gray-500">Belum ada produk.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
 
-  .modal-close {
-    position: absolute;
-    top: 20px;
-    right: 35px;
-    color: white;
-    font-size: 2rem;
-    font-weight: bold;
-    cursor: pointer;
-  }
-
-  .pagination {
-    margin-top: 1.5rem;
-    display: flex;
-    justify-content: center;
-  }
-
-  .pagination .page-link {
-    background-color: #fbcfe8;
-    color: #6b21a8;
-    border-radius: 0.375rem;
-    margin: 0 0.25rem;
-    padding: 0.4rem 0.75rem;
-    transition: all 0.3s ease;
-    font-weight: 500;
-    border: none;
-  }
-
-  .pagination .page-link:hover {
-    background-color: #f9a8d4;
-    color: #4c1d95;
-  }
-
-  .pagination .active .page-link {
-    background-color: #ec4899;
-    color: #ffffff;
-  }
-
-  /* Responsive tweaks */
-  @media (max-width: 768px) {
-    table {
-      font-size: 0.85rem;
-    }
-
-    .btn-action {
-      padding: 0.35rem 0.65rem;
-      font-size: 0.8rem;
-    }
-  }
-</style>
-
-
-  <div class="p-6 max-w-7xl mx-auto">
-    {{-- Flash Message --}}
-    @if (session('success'))
-      <div class="mb-4 p-4 bg-green-100 text-green-800 rounded-lg shadow">
-        {{ session('success') }}
-      </div>
-    @endif
-
-    {{-- Header --}}
-    <!-- <div class="flex items-center justify-between mb-6">
-      <h1 class="text-3xl font-extrabold">📦 Daftar Produk</h1>
-      <a href="{{ route('admin.products.create') }}" class="btn-action">+ Tambah Produk</a>
-    </div> -->
-    <div class="flex justify-between items-center mb-4">
-        <h2>📁 Manajemen Kategori</h2>
-        <a href="{{ route('admin.products.create') }}" class="btn-action">+ Tambah Produk</a>
+                <div class="pagination">
+                    {{ $products->links() }}
+                </div>
+            </div>
+        </div>
     </div>
-    {{-- Tabel Produk --}}
-    <div class="overflow-x-auto rounded-xl shadow border border-pink-200">
-      <table class="min-w-[1000px] text-sm">
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Gambar</th>
-            <th>Nama</th>
-            <th>Kategori</th>
-            <th>Deskripsi</th>
-            <th>Harga</th>
-            <th>Status</th>
-            <th class="text-center">Aksi</th>
-          </tr>
-        </thead>
-        <tbody>
-          @forelse ($products as $index => $product)
-            <tr>
-              <td class="text-center">{{ $index + 1 }}</td>
-              <td class="text-center">
-                @if($product->image)
-                  <img src="{{ asset('storage/' . $product->image) }}"
-                       alt="{{ $product->name }}"
-                       onclick="showImageModal('{{ asset('storage/' . $product->image) }}')">
-                @else
-                  <span class="text-blue-400 italic text-sm">Tidak ada</span>
-                @endif
-              </td>
-              <td class="font-semibold text-blue-800 truncate" title="{{ $product->name }}">
-                {{ $product->name }}
-              </td>
-              <td class="text-blue-600">{{ $product->category->name ?? '-' }}</td>
-              <td class="text-blue-600 truncate" title="{{ $product->description ?? '-' }}">
-                {{ Str::limit($product->description, 50) }}
-              </td>
-              <td class="font-semibold text-blue-900">
-                Rp {{ number_format($product->price, 0, ',', '.') }}
-              </td>
-              <td class="text-center">
-                <form action="{{ route('admin.products.toggle', $product->id) }}" method="POST">
-                  @csrf
-                  @method('PATCH')
-                  <button type="submit"
-                          class="btn-action {{ $product->is_active ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800' }}">
-                    {{ $product->is_active ? '✅ Aktif' : '⛔ Nonaktif' }}
-                  </button>
-                </form>
-              </td>
-              <td class="text-center space-x-2">
-                <a href="{{ route('admin.products.edit', $product->id) }}" class="btn-action">✏️ Edit</a>
-                <form action="{{ route('admin.products.destroy', $product->id) }}" method="POST"
-                      class="inline" onsubmit="return confirm('Yakin ingin menghapus produk ini?')">
-                  @csrf
-                  @method('DELETE')
-                  <button type="submit" class="btn-action">🗑️ Hapus</button>
-                </form>
-              </td>
-            </tr>
-          @empty
-            <tr>
-              <td colspan="8" class="text-center py-8 text-blue-500 italic text-lg">
-                Belum ada produk tersedia. 🌸
-              </td>
-            </tr>
-          @endforelse
-        </tbody>
-      </table>
-    </div>
-
-    {{-- Pagination --}}
-    <div class="pagination">
-      {{ $products->links() }}
-    </div>
-  </div>
-
-  {{-- Modal Image Viewer --}}
-  <div id="imageModal" class="modal" onclick="closeModal()">
-    <span class="modal-close" onclick="closeModal()">&times;</span>
-    <img class="modal-content" id="modalImage">
-  </div>
-
-  <script>
-    function showImageModal(src) {
-      document.getElementById('imageModal').style.display = 'block';
-      document.getElementById('modalImage').src = src;
-    }
-
-    function closeModal() {
-      document.getElementById('imageModal').style.display = 'none';
-    }
-  </script>
 </x-layouts.app>

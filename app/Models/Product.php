@@ -9,17 +9,43 @@ class Product extends Model
 {
     use HasFactory;
 
+    /**
+     * Kolom yang dapat diisi secara massal.
+     */
     protected $fillable = [
         'category_id',
         'name',
         'description',
         'price',
         'image',
-        'is_active',  // tambahkan is_active
+        'is_active',
+        'stock',
+        'weight',
+        'hub_product_id', // Gunakan jika kolom ini ada
+        'sku',            // Gunakan jika kolom ini ada
     ];
 
     /**
-     * Relasi: Produk milik satu kategori
+     * Tipe data otomatis dikonversi.
+     */
+    protected $casts = [
+        'is_active' => 'boolean',
+        'price' => 'float',
+        'stock' => 'integer',
+        'weight' => 'integer',
+    ];
+
+    /**
+     * Nilai default atribut (fallback).
+     */
+    protected $attributes = [
+        'is_active' => true,
+        'stock' => 9999,
+        'weight' => 1000,
+    ];
+
+    /**
+     * Relasi: Produk milik satu kategori.
      */
     public function category()
     {
@@ -27,10 +53,10 @@ class Product extends Model
     }
 
     /**
-     * Scope untuk ambil produk yang aktif saja
+     * Scope: Ambil hanya produk yang aktif.
      */
     public function scopeActive($query)
     {
-        return $query->where('is_active', 1);
+        return $query->where('is_active', true);
     }
 }

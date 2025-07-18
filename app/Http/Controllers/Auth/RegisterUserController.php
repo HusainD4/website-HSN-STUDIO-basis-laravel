@@ -5,12 +5,15 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules;
+use Illuminate\Auth\Events\Registered;
 
 class RegisterUserController extends Controller
 {
     /**
-     * Tampilkan form register custom.
+     * Menampilkan form registrasi untuk customer.
      */
     public function showRegisterForm()
     {
@@ -18,49 +21,34 @@ class RegisterUserController extends Controller
     }
 
     /**
-     * Proses register user biasa.
+     * Menangani permintaan registrasi dari form.
+     * Metode ini menggabungkan logika dari 'register' dan 'store'.
      */
-     public function register(Request $request)
-    {
-        // Validasi input
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
-
-        // Buat user baru dengan role default "user"
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => 'user',
-        ]);
-
-        // Login otomatis
-        Auth::login($user);
-
-        // Redirect ke homepage (pastikan route ini ada di web.php)
-        return redirect()->route('homepage')->with('success', 'Akun berhasil dibuat!');
-    }
-    
     public function store(Request $request)
     {
+        // Validasi input dengan standar Laravel terbaru
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
 
+        // --- BAGIAN INI DIPERBAIKI ---
+        // Membuat user baru dengan peran 'customer' secara eksplisit.
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'user', // 🛠️ Set role default sebagai user
+            'role' => 'customer', // Peran diubah dari 'user' menjadi 'customer'
         ]);
 
+        // Memicu event 'Registered' (untuk notifikasi, verifikasi email, dll.)
+        event(new Registered($user));
+
+        // Login otomatis setelah registrasi berhasil
         Auth::login($user);
 
-        return redirect()->route('homepage'); // Ubah jika kamu punya route user khusus
+        // Arahkan ke dashboard setelah login
+        return redirect('/dashboard')->with('success', 'Akun berhasil dibuat! Selamat datang.');
     }
 }

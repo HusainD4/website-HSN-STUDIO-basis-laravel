@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Transaction;
 use App\Models\TransactionItem;
+use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller
 {
@@ -108,5 +109,26 @@ class CartController extends Controller
         session()->forget('cart');
 
         return redirect()->route('cart.index')->with('success', 'Checkout berhasil! Pesanan Anda telah diterima.');
+    }
+    // Contoh di CartController.php
+    public function update(Request $request, $id)
+    {
+        $cart = session()->get('cart', []);
+
+        if(isset($cart[$id])) {
+            $change = (int)$request->input('change_quantity');
+            $newQuantity = $cart[$id]['quantity'] + $change;
+
+            if ($newQuantity > 0) {
+                $cart[$id]['quantity'] = $newQuantity;
+            } else {
+                // Jika kuantitas jadi 0 atau kurang, hapus item
+                unset($cart[$id]);
+            }
+
+            session()->put('cart', $cart);
+        }
+
+        return redirect()->back()->with('success', 'Keranjang berhasil diperbarui!');
     }
 }
